@@ -1,7 +1,8 @@
-#include "Math.h"
 #include "Matrix2.h"
 #include "Matrix3.h"
 #include "Vector2.h"
+
+using namespace Xixels;
 
 const Vector2 Vector2::cOrigin( 0.0f, 0.0f );
 const Vector2 Vector2::cIdentity( 1.0f, 1.0f );
