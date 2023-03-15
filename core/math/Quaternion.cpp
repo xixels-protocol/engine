@@ -52,7 +52,6 @@ _void Quaternion::PrecomputeSlerpParams( const Quaternion& q1, const Quaternion&
 Quaternion Quaternion::Slerp( const Quaternion& q1, const Quaternion& q2, _float dot, _float theta, _float recipsqrt, _float f )
 {
 	// Dont need clamp f to speed up.
-
 	_bool flip = dot < 0.0f;
 
 	if ( dot < 0.0f )
@@ -90,13 +89,6 @@ Quaternion& Quaternion::operator *= ( const Quaternion& q )
 	z = qw1 * q.z - qx1 * q.y + qy1 * q.x + qz1 * q.w;
 	w = qw1 * q.w - qx1 * q.x - qy1 * q.y - qz1 * q.z;
 
-	// x = ( w1 * x2 ) + ( x1 *  w2 ) + ( y1 * -z2 ) + ( z1 *  y2 )
-	// y = ( w1 * y2 ) + ( x1 *  z2 ) + ( y1 *  w2 ) + ( z1 * -x2 )
-	// z = ( w1 * z2 ) + ( x1 * -y2 ) + ( y1 *  x2 ) + ( z1 *  w2 )
-	// w = ( w1 * w2 ) + ( x1 * -x2 ) + ( y1 * -y2 ) + ( z1 * -z2 )
-
-	// TODO, using SSE to speed up.
-
 	return *this;
 }
 
@@ -109,13 +101,6 @@ Quaternion& Quaternion::Cross( const Quaternion& q )
 	y = qw1 * q.y - qx1 * q.z + qy1 * q.w + qz1 * q.x;
 	z = qw1 * q.z + qx1 * q.y - qy1 * q.x + qz1 * q.w;
 	w = qw1 * q.w - qx1 * q.x - qy1 * q.y - qz1 * q.z;
-
-	// x = ( w1 * x2 ) + ( x1 *  w2 ) + ( y1 *  z2 ) + ( z1 * -y2 )
-	// y = ( w1 * y2 ) + ( x1 * -z2 ) + ( y1 *  w2 ) + ( z1 *  x2 )
-	// z = ( w1 * z2 ) + ( x1 *  y2 ) + ( y1 * -x2 ) + ( z1 *  w2 )
-	// w = ( w1 * w2 ) + ( x1 * -x2 ) + ( y1 * -y2 ) + ( z1 * -z2 )
-
-	// TODO, using SSE to speed up.
 
 	return *this;
 }
