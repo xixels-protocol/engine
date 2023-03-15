@@ -32,7 +32,14 @@ Matrix3& Matrix3::operator *= ( _float s )
 
 Matrix3& Matrix3::operator *= ( const Matrix3& mat )
 {
-	// TODO.
+	Matrix3 temp = Matrix3::cZero;
+	for ( _dword i = 0; i < 3; i ++ )
+		for ( _dword j = 0; j < 3; j ++ )
+			for ( _dword k = 0; k < 3; k ++ )
+				temp.m[i][j] += m[i][k] * mat.m[k][j];
+
+	*this = temp;
+
 	return *this;
 }
 

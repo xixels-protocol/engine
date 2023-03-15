@@ -259,7 +259,13 @@ Matrix4& Matrix4::operator += ( const Matrix4& mat )
 
 Matrix4& Matrix4::operator *= ( const Matrix4& mat )
 {
-	// TODO.
+	Matrix4 temp = Matrix4::cZero;
+	for ( _dword i = 0; i < 4; i ++ )
+		for ( _dword j = 0; j < 4; j ++ )
+			for ( _dword k = 0; k < 4; k ++ )
+				temp.m[i][j] += m[i][k] * mat.m[k][j];
+
+	*this = temp;
 
 	return *this;
 }

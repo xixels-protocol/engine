@@ -190,7 +190,7 @@ Quaternion& Quaternion::Rotation( const Vector3& v1, const Vector3& v2 )
 	if ( m < Math::cEpsilon )
 		return ( *this = Quaternion::cIdentity );
 
-    Vector3 a = Vector3::Cross( vv1, vv2 );
+	Vector3 a = Vector3::Cross( vv1, vv2 );
 
 	x = a.x / m;
 	y = a.y / m;
