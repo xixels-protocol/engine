@@ -1,4 +1,5 @@
 #include "Plane.h"
+#include "Ray.h"
 
 using namespace Xixels;
 
