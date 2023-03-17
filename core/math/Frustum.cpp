@@ -292,3 +292,34 @@ _bool Frustum::IntersectMoving( const AxisAlignedBox& box, const Vector3& dir ) 
 
 	return _false;
 }
+
+HomogenousFrustum& HomogenousFrustum::Build( const Matrix4& projinv )
+{
+	// Corners of the projection frustum in homogenous space.
+	const static Vector4 cHomogenousPoints[6] =
+	{
+		Vector4(  1.0f,  0.0f, 1.0f, 1.0f ),	// Right (at far plane)
+		Vector4( -1.0f,  0.0f, 1.0f, 1.0f ),	// Left
+		Vector4(  0.0f,  1.0f, 1.0f, 1.0f ),	// Top
+		Vector4(  0.0f, -1.0f, 1.0f, 1.0f ),	// Bottom
+		Vector4(  0.0f,  0.0f, 0.0f, 1.0f ),	// Near
+		Vector4(  0.0f,  0.0f, 1.0f, 1.0f ),	// Far
+	};
+
+	// Compute the frustum corners in world space.
+	Vector4 corners[6];
+	for ( _dword i = 0; i < 6; i ++ )
+		corners[i] = cHomogenousPoints[i] * projinv;
+
+	// Compute the slopes.
+	mRightSlope = corners[0].x / corners[0].z;
+	mLeftSlope = corners[1].x / corners[1].z;
+	mTopSlope = corners[2].y / corners[2].z;
+	mBottomSlope = corners[3].y / corners[3].z;
+
+	// Compute near and far.
+	mNearZ = corners[4].z / corners[4].w;
+	mFarZ = corners[5].z / corners[5].w;
+
+	return *this;
+}

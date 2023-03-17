@@ -49,4 +49,25 @@ public:
 	_bool			IntersectMoving( const AxisAlignedBox& box, const Vector3& dir ) const;
 };
 
+
+class HomogenousFrustum
+{
+public:
+	_float	mRightSlope;
+	_float	mLeftSlope;
+	_float	mTopSlope;
+	_float	mBottomSlope;
+
+	_float	mNearZ;
+	_float	mFarZ;
+
+public:
+	inline HomogenousFrustum( )
+		{ }
+	inline HomogenousFrustum( const Matrix4& projinv )
+		{ Build( projinv ); }
+
+	HomogenousFrustum& Build( const Matrix4& projinv );
+};
+
 };
