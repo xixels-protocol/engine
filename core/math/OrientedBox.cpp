@@ -1,3 +1,4 @@
+#include "Frustum.h"
 #include "OrientedBox.h"
 
 using namespace Xixels;
@@ -18,7 +19,27 @@ OrientedBox& OrientedBox::Build( const Vector3& vmin, const Vector3& vmax )
 
 OrientedBox& OrientedBox::Build( const Matrix4& projinv, _float begin, _float end )
 {
-	// TODO.
+	HomogenousFrustum hfrustum( projinv );
+
+	Vector3 righttop( hfrustum.mRightSlope, hfrustum.mTopSlope, 1.0f );
+	Vector3 leftbottom( hfrustum.mLeftSlope, hfrustum.mBottomSlope, 1.0f );
+	Vector3 nearv( begin, begin, begin );
+	Vector3 farv( end, end, end );
+
+	Vector3 righttopnear = righttop * nearv;
+	Vector3 righttopfar = righttop * farv;
+	Vector3 leftbottomnear = leftbottom * nearv;
+	Vector3 leftbottomfar = leftbottom * farv;
+
+	vs[0] = righttopnear;
+	vs[1] = righttopnear; vs[1].x = leftbottomnear.x;
+	vs[2] = leftbottomnear;
+	vs[3] = righttopnear; vs[3].y = leftbottomnear.y;
+
+	vs[4] = righttopfar;
+	vs[5] = righttopfar; vs[5].x = leftbottomfar.x;
+	vs[6] = leftbottomfar;
+	vs[7] = righttopfar; vs[7].y = leftbottomfar.y;
 
 	return *this;
 }
