@@ -308,6 +308,7 @@ public:
 template< typename Type, typename PType > const RectT< Type, PType > RectT< Type, PType >::cNullRect( 0, 0, 0, 0 );
 template< typename Type, typename PType > const RectT< Type, PType > RectT< Type, PType >::cInitRect( 16777216, 16777216, -16777216, -16777216 );
 
+class Point;
 typedef RectT< _long, Point > Rect;
 
 class Vector2;
