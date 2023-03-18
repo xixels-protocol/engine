@@ -103,6 +103,101 @@ public:
 	inline static _float WrapPi( _float radian )
 		{ radian += cPi; radian -= Floor( radian / c2Pi ) * c2Pi; radian += cPi; return radian; }
 
+	// Test if two lines parallel.
+	template < typename Type >
+	inline static _bool Parallel( Type x1, Type y1, Type x2, Type y2, Type x3, Type y3, Type x4, Type y4 )
+	{
+		return (_float) Abs( ( x1 - x2 ) * ( y3 - y4 ) - ( x3 - x4 ) * ( y1 - y2 ) ) < cEpsilon;
+	}
+
+	// Get the projection if a point to a line.
+	template < typename Type >
+	inline static Type PointOnLine( Type x1, Type y1, Type x2, Type y2, Type x0, Type y0, Type& x, Type& y )
+	{
+		_double px = x2 - x1;
+		_double py = y2 - y1;
+		_double m  = px * px + py * py;
+		_double u  = ( ( x0 - x1 ) * px + ( y0 - y1 ) * py ) / m;
+
+		if ( u > 1.0 )
+			u = 1.0;
+		if ( u < 0.0 )
+			u = 0.0;
+
+		_double xx = x1 + u * px;
+		_double yy = y1 + u * py;
+
+		_double dx = xx - x0;
+		_double dy = yy - y0;
+
+		x = (Type) xx;
+		y = (Type) yy;
+
+		// No need to set sqrt value for now.
+		return (Type) ( dx * dx + dy * dy );
+	}
+
+	// Test if a point on left side or right side of a line.
+	template < typename Type >
+	inline static _long PointVSLine( Type x1, Type y1, Type x2, Type y2, Type x0, Type y0 )
+	{
+		x1 -= x0; y1 -= y0; x2 -= x0; y2 -= y0;
+
+		_double ret = x1 * y2 - y1 * x2;
+
+		if ( ret > Math::cEpsilon )
+			return 1;
+		if ( ret < -Math::cEpsilon )
+			return -1;
+
+		return 0;
+	}
+
+	// Test if two lines intersect.
+	template < typename Type >
+	inline static _bool LineVSLine( Type x1, Type y1, Type x2, Type y2, Type x3, Type y3, Type x4, Type y4, Type* x0 = _null, Type* y0 = _null )
+	{
+		if ( Parallel( x1, y1, x2, y2, x3, y3, x4, y4 ) )
+			return _false;
+
+		if ( PointVSLine( x1, y1, x2, y2, x3, y3 ) * PointVSLine( x1, y1, x2, y2, x4, y4 ) > 0 )
+			return _false;
+
+		if ( PointVSLine( x3, y3, x4, y4, x1, y1 ) * PointVSLine( x3, y3, x4, y4, x2, y2 ) > 0 )
+			return _false;
+
+		if ( x0 != _null && y0 != _null )
+		{
+			_double p1 = ( x1 - x3 ) * ( y3 - y4 ) - ( y1 - y3 ) * ( x3 - x4 );
+			_double p2 = ( x1 - x2 ) * ( y3 - y4 ) - ( y1 - y2 ) * ( x3 - x4 );
+			_double p  = p1 / p2;
+
+			*x0 = (Type) ( x1 + ( x2 - x1 ) * p );
+			*y0 = (Type) ( y1 + ( y2 - y1 ) * p );
+		}
+
+		return _true;
+	}
+
+	// Test if a point and a line intersect. The function also returns true if the point is one of the ends of the line segment.
+	template < typename Type >
+	inline static _bool Intersect( Type x1, Type y1, Type x2, Type y2, Type x0, Type y0 )
+	{
+		return Math::PointVSLine( x1, y1, x2, y2, x0, y0 ) == 0 && ( x0 - x1 ) * ( x0 - x2 ) <= 0 && ( y0 - y1 ) * ( y0 - y2 ) <= 0;
+	}
+
+	// Test if two lines intersect. The function also returns true if two lines are overlapped or some parts of them are overlapped.
+	template < typename Type >
+	inline static _bool Intersect( Type x1, Type y1, Type x2, Type y2, Type x3, Type y3, Type x4, Type y4 )
+	{
+		return Math::Max( x1, x2 ) >= Math::Min( x3, x4 ) &&
+			Math::Max( x3, x4 ) >= Math::Min( x1, x2 ) &&
+			Math::Max( y1, y2 ) >= Math::Min( y3, y4 ) &&
+			Math::Max( y3, y4 ) >= Math::Min( y1, y2 ) &&
+			Math::PointVSLine( x1, y1, x2, y2, x3, y3 ) * Math::PointVSLine( x1, y1, x2, y2, x4, y4 ) <= 0 &&
+			Math::PointVSLine( x3, y3, x4, y4, x1, y1 ) * Math::PointVSLine( x3, y3, x4, y4, x2, y2 ) <= 0;
+	}
+
 	// Calculates the ceiling of a value.
 	static _float	Ceil( _float value );
 	static _double	CeilD( _double value );
