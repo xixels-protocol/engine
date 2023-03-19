@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Typedef.h"
+#include <assert.h>
 
 namespace Xixels
 {
@@ -63,6 +64,16 @@ public:
 		}
 	}
 
+	Array( const Array< Type, Key >&& ary )
+	{
+		mSize		= ary.mSize;
+		mLength		= ary.mLength;
+		mElements	= ary.mElements;
+		ary.mSize	= 0;
+		ary.mLength	= 0;
+		ary.mElements	= _null;
+	}
+
 	Array< Type, Key >& operator = ( const Array< Type, Key >& ary )
 	{
 		if ( mSize < ary.mLength )
@@ -91,19 +102,19 @@ public:
 		{ return index < mLength && index >= 0; }
 
 	inline const Type& operator [] ( _long index ) const
-		{ FG_ASSERT( IsIndexValid( index ) ); return mElements[ index ]; }
+		{ assert( IsIndexValid( index ) ); return mElements[ index ]; }
 	inline Type& operator [] ( _long index )
-		{ FG_ASSERT( IsIndexValid( index ) ); return mElements[ index ]; }
+		{ assert( IsIndexValid( index ) ); return mElements[ index ]; }
 
 	inline const Type& Head( ) const
-		{ FG_ASSERT( mLength > 0 ); return mElements[0]; }
+		{ assert( mLength > 0 ); return mElements[0]; }
 	inline Type& Head( )
-		{ FG_ASSERT( mLength > 0 ); return mElements[0]; }
+		{ assert( mLength > 0 ); return mElements[0]; }
 
 	inline const Type& Tail( ) const
-		{ FG_ASSERT( mLength > 0 ); return mElements[ mLength - 1 ]; }
+		{ assert( mLength > 0 ); return mElements[ mLength - 1 ]; }
 	inline Type& Tail( )
-		{ FG_ASSERT( mLength > 0 ); return mElements[ mLength - 1 ]; }
+		{ assert( mLength > 0 ); return mElements[ mLength - 1 ]; }
 
 	inline Iterator GetHeadIterator( ) const
 		{ return Iterator( (Array< Type, Key >*) this, 0 ); }
@@ -255,10 +266,6 @@ public:
 
 		mSize = size;
 		Type* newelements = new Type[ mSize ];
-
-		#ifdef _Xixels_DEVELOP_VERSION
-		Memory::IncreaseAllocSize( Memory::_TYPE_ARRAY, GetAllocatedSize( ) );
-		#endif
 
 		// Copy elements into new memory, execute operator = of Type class.
 		for ( _long i = 0; i < mLength; i ++ )
