@@ -1,12 +1,10 @@
 #pragma once
 
 #include "StringPtr.h"
+#include "DataType.h"
 
 namespace Xixels
 {
-
-class Oword;
-class Qword;
 
 class String : public StringPtr
 {
