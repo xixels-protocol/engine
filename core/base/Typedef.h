@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #define _true		1
 #define _false		0
 
@@ -24,19 +26,24 @@ typedef void				_void;
 typedef void*				_handle;
 
 // Signed 8-bits integer.
-typedef signed char			_tiny;
+typedef int8_t			    _tiny;
 // Unsigned 8-bits integer.
-typedef unsigned char		_byte;
+typedef uint8_t				_byte;
 
 // Signed 16-bits integer.
-typedef signed short		_short;
+typedef int16_t		        _short;
 // Unsigned 16-bits integer.
-typedef unsigned short		_word;
+typedef uint16_t		    _word;
 
 // Signed 32-bits integer.
-typedef signed int			_long;
+typedef int32_t			    _long;
 // Unsigned 32-bits integer.
-typedef unsigned int		_dword;
+typedef uint32_t		    _dword;
+
+// Signed 64-bits integer.
+typedef int64_t             _large;
+// Unsigned 64-bits integer.
+typedef uint64_t            _qword;
 
 // 32-bits floating point number.
 typedef float				_float;
