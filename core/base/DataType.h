@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Typedef.h"
-#include "String.h"
 #include "Memory.h"
 
 namespace Xixels
 {
+
+class String;
+class StringPtr;
 
 class Tiny
 {
@@ -212,7 +214,7 @@ public:
 	inline _dword HiDword( ) const
 		{ return ( (_dword*) this )[1]; }
 
-	static	Qword GetHashCode( _char* namebuffer, StringPtr resname, StringPtr path = L"" );
+	static	Qword GetHashCode( _char* namebuffer, StringPtr resname, StringPtr path );
 
 	String	ToString( ) const;
 };
