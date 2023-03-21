@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string.h>
 #include "Typedef.h"
 
 namespace Xixels
