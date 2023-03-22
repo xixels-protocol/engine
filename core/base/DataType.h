@@ -139,13 +139,6 @@ private:
 	_dword	mValue;
 
 public:
-	#ifdef _Xixels_ARCH_64BIT
-
-	inline explicit Dword( _ptr value )
-		: mValue( (_dword) value ) { }
-
-	#endif
-
 	inline explicit Dword( _dword value )
 		: mValue( value ) { }
 	inline explicit Dword( _word loword, _word hiword )
