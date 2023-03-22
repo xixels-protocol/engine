@@ -1,4 +1,6 @@
 #include "StringPtr.h"
+#include <wchar.h>
+#include <string.h>
 
 using namespace Xixels;
 
@@ -155,23 +157,8 @@ _chara* Xixels::StringPtr::Find( _chara* buffer, const _chara* str )
 
 _bool StringPtr::IsPunct( _chara ch )
 {
-	return ::ispunct( ch ) != 0;
-}
-
-_qword StringPtr::HashCode( const _chara* str )
-{
-	_dword hash1 = 0x7FED7FED, seed = 0xEEEEEEEE, hash2 = 0, ch = 0;
-
-	while ( *str != 0 )
-	{
-		ch = *str ++;
-
-		hash1 = ch ^ ( hash1 + seed );
-		seed = ch + hash1 + seed + ( seed << 5 ) + 3;
-		hash2 = 31 * hash2 + ch;
-	}
-
-	return Qword( hash1, hash2 );
+	// TODO.
+	return _false;
 }
 
 _dword StringPtr::Length( ) const
