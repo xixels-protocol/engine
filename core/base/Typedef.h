@@ -22,8 +22,8 @@ typedef wchar_t				_char;
 typedef bool				_bool;
 // Any type.
 typedef void				_void;
-// Handle to a win32 kernel object.
-typedef void*				_handle;
+// Unsigned integer type capable of holding a pointer to void.
+typedef uintptr_t           _ptr;
 
 // Signed 8-bits integer.
 typedef int8_t			    _tiny;
