@@ -214,8 +214,6 @@ public:
 	inline _dword HiDword( ) const
 		{ return ( (_dword*) this )[1]; }
 
-	static	Qword GetHashCode( _char* namebuffer, StringPtr resname, StringPtr path );
-
 	String	ToString( ) const;
 };
 
