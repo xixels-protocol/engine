@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Typedef.h"
-#include "Memory.h"
+#include "Memory.hpp"
 
 namespace Xixels
 {
