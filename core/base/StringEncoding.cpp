@@ -1,7 +1,8 @@
 #include <assert.h>
 #include <stdlib.h>
-#include "../math/Math.h"
-#include "String.h"
+#include <string.h>
+#include "../math/Math.hpp"
+#include "String.hpp"
 #include "StringEncoding.h"
 
 using namespace Xixels;
@@ -152,7 +153,7 @@ _charw* StringEncoding::UTF8ToUCS2( _charw* buffer, _dword size, const _chara* s
 
 _chara* StringEncoding::UCS2ToUTF8( _chara* buffer, _dword size, const _charw* str, _dword number, _dword* chcopy, _bool* morespace )
 {
-	assert( str != _null )
+	assert( str != _null );
 	if ( buffer == _null )
 		size = -1;
 
