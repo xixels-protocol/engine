@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math.h"
+#include "Math.hpp"
 #include "Vector2.h"
 
 namespace Xixels
