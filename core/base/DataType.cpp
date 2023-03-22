@@ -1,4 +1,4 @@
-#include "String.h"
+#include "base/String.h"
 #include "StringFormatter.h"
 #include <wchar.h>
 #include "DataType.h"
@@ -86,12 +86,6 @@ Qword::Qword( StringPtr str )
 {
 	_char* temp = _null;
 	mValue = _qword( ::_wcstoui64( str, &temp, 16 ) );
-}
-
-Qword Qword::GetHashCode( _char* namebuffer, StringPtr resname, StringPtr path )
-{
-	StringPtr name = StringFormatter::FormatResName( namebuffer, path, resname );
-	return Qword( name.HashCode1( ), name.HashCode2( ) );
 }
 
 String Qword::ToString( ) const
