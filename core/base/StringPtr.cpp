@@ -1,6 +1,7 @@
 #include "StringPtr.h"
 #include <wchar.h>
 #include <string.h>
+#include <ctype.h>
 
 using namespace Xixels;
 
@@ -157,8 +158,7 @@ _chara* Xixels::StringPtr::Find( _chara* buffer, const _chara* str )
 
 _bool StringPtr::IsPunct( _chara ch )
 {
-	// TODO.
-	return _false;
+	return ::ispunct( ch ) != 0;
 }
 
 _dword StringPtr::Length( ) const
