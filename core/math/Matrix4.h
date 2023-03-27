@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Math.h"
+#include "Math.hpp"
 #include "Matrix3.h"
 #include "Vector3.h"
 #include "Vector4.h"
