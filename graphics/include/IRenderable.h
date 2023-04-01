@@ -321,4 +321,302 @@ struct OverlayTriangleOnlyImage : public OverlayImageBase
 	}
 };
 
+struct OverlayRectangle : public Renderable
+{
+	Vector2			mPositionLT;
+	Vector2			mPositionRB;
+	Color			mColor;
+
+	OverlayRectangle( )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE;
+	}
+
+	OverlayRectangle( const Vector2& poslt, const Vector2& posrb, _dword color )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mColor			= color;
+	}
+};
+
+struct OverlayRectangleImage : public OverlayImageBase
+{
+	Vector2		mPositionLT;
+	Vector2		mPositionRB;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+	_dword		mColor;
+
+	OverlayRectangleImage( )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_IMAGE;
+	}
+
+	OverlayRectangleImage( const Vector2& poslt, const Vector2& posrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mTexcoordLT		= Vector2::cOrigin;
+		mTexcoordRT		= Vector2( 1.0f, 0.0f );
+		mTexcoordLB		= Vector2( 0.0f, 1.0f );
+		mTexcoordRB		= Vector2( 1.0f, 1.0f );
+		mColor			= color;
+		mTexture		= texture;
+	}
+
+	OverlayRectangleImage( const Vector2& poslt, const Vector2& posrb, const Vector2& texlt, const Vector2& texrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= Vector2( texrb.x, texlt.y );
+		mTexcoordLB		= Vector2( texlt.x, texrb.y );
+		mTexcoordRB		= texrb;
+		mColor			= color;
+		mTexture		= texture;
+	}
+
+	OverlayRectangleImage( const Vector2& poslt, const Vector2& posrb, const Vector2& texlt, const Vector2& texrt,
+		const Vector2& texlb, const Vector2& texrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= texrt;
+		mTexcoordLB		= texlb;
+		mTexcoordRB		= texrb;
+		mColor			= color;
+		mTexture		= texture;
+	}
+};
+
+struct OverlayRectangleOnlyImage : public OverlayImageBase
+{
+	Vector2		mPositionLT;
+	Vector2		mPositionRB;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRB;
+
+	OverlayRectangleOnlyImage( )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_ONLYIMAGE;
+	}
+
+	OverlayRectangleOnlyImage( const Vector2& poslt, const Vector2& posrb, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_ONLYIMAGE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mTexcoordLT		= Vector2::cOrigin;
+		mTexcoordRB		= Vector2( 1.0f, 1.0f );
+		mTexture		= texture;
+	}
+
+	OverlayRectangleOnlyImage( const Vector2& poslt, const Vector2& posrb, const Vector2& texlt, const Vector2& texrb, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_RECTANGLE_ONLYIMAGE;
+		mPositionLT		= poslt;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRB		= texrb;
+		mTexture		= texture;
+	}
+};
+
+struct OverlayQuadrangle : public Renderable
+{
+	Vector2		mPositionLT;
+	Vector2		mPositionRT;
+	Vector2		mPositionLB;
+	Vector2		mPositionRB;
+	_dword		mColorLT;
+	_dword		mColorRT;
+	_dword		mColorLB;
+	_dword		mColorRB;
+
+	OverlayQuadrangle( )
+	{
+		mType		= _TYPE_OVERLAY_QUADRANGLE;
+	}
+
+	OverlayQuadrangle( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb, _dword color )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mColorLT		= color;
+		mColorRT		= color;
+		mColorLB		= color;
+		mColorRB		= color;
+	}
+};
+
+struct OverlayQuadrangleImage : public OverlayImageBase
+{
+	Vector2		mPositionLT;
+	Vector2		mPositionRT;
+	Vector2		mPositionLB;
+	Vector2		mPositionRB;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+	_dword		mColorLT;
+	_dword		mColorRT;
+	_dword		mColorLB;
+	_dword		mColorRB;
+
+	OverlayQuadrangleImage( )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_IMAGE;
+	}
+
+	OverlayQuadrangleImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= Vector2::cOrigin;
+		mTexcoordRT		= Vector2( 1.0f, 0.0f );
+		mTexcoordLB		= Vector2( 0.0f, 1.0f );
+		mTexcoordRB		= Vector2( 1.0f, 1.0f );
+		mColorLT		= color;
+		mColorRT		= color;
+		mColorLB		= color;
+		mColorRB		= color;
+		mTexture		= texture;
+	}
+
+	OverlayQuadrangleImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb,
+		const Vector2& texlt, const Vector2& texrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= Vector2( texrb.x, texlt.y );
+		mTexcoordLB		= Vector2( texlt.x, texrb.y );
+		mTexcoordRB		= texrb;
+		mColorLT		= color;
+		mColorRT		= color;
+		mColorLB		= color;
+		mColorRB		= color;
+		mTexture		= texture;
+	}
+
+	OverlayQuadrangleImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb,
+		const Vector2& texlt, const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, _dword color, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_IMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= texrt;
+		mTexcoordLB		= texlb;
+		mTexcoordRB		= texrb;
+		mColorLT		= color;
+		mColorRT		= color;
+		mColorLB		= color;
+		mColorRB		= color;
+		mTexture		= texture;
+	}
+};
+
+struct OverlayQuadrangleOnlyImage : public OverlayImageBase
+{
+	Vector2		mPositionLT;
+	Vector2		mPositionRT;
+	Vector2		mPositionLB;
+	Vector2		mPositionRB;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+
+	OverlayQuadrangleOnlyImage( )
+	{
+		mType           = _TYPE_OVERLAY_QUADRANGLE_ONLYIMAGE;
+	}
+
+	OverlayQuadrangleOnlyImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_ONLYIMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= Vector2::cOrigin;
+		mTexcoordRT		= Vector2( 1.0f, 0.0f );
+		mTexcoordLB		= Vector2( 0.0f, 1.0f );
+		mTexcoordRB		= Vector2( 1.0f, 1.0f );
+		mTexture		= texture;
+	}
+
+	OverlayQuadrangleOnlyImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb,
+		const Vector2& texlt, const Vector2& texrb, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_ONLYIMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= Vector2( texrb.x, texlt.y );
+		mTexcoordLB		= Vector2( texlt.x, texrb.y );
+		mTexcoordRB		= texrb;
+		mTexture		= texture;
+	}
+
+	OverlayQuadrangleOnlyImage( const Vector2& poslt, const Vector2& posrt, const Vector2& poslb, const Vector2& posrb,
+		const Vector2& texlt, const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, ITexture* texture )
+	{
+		mType			= _TYPE_OVERLAY_QUADRANGLE_ONLYIMAGE;
+		mPositionLT		= poslt;
+		mPositionRT		= posrt;
+		mPositionLB		= poslb;
+		mPositionRB		= posrb;
+		mTexcoordLT		= texlt;
+		mTexcoordRT		= texrt;
+		mTexcoordLB		= texlb;
+		mTexcoordRB		= texrb;
+		mTexture		= texture;
+	}
+};
+
+struct OverlayConvexPolygon : public Renderable
+{
+	const Vector2*	mPoints;
+	_dword			mCount;
+	_dword			mColor;
+
+	OverlayConvexPolygon( )
+	{
+		mType		= _TYPE_OVERLAY_CONVEXPOLYGON;
+		mCount		= 0;
+	}
+
+	OverlayConvexPolygon( const Vector2* points, _dword count, _dword color )
+	{
+		mType		= _TYPE_OVERLAY_CONVEXPOLYGON;
+		mPoints		= points;
+		mCount		= count;
+		mColor		= color;
+	}
+};
+
 };
