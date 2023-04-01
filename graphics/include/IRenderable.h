@@ -175,4 +175,150 @@ struct Geometry : public Renderable
 		{ return mInstanceBuffer != _null ? mInstanceBoundBox : ( mVertexBuffer != _null ? mVertexBuffer->GetBoundBox( ): AxisAlignedBox::cNullBox ); }
 };
 
+struct OverlayImageBase : public Renderable
+{
+	ITexture*	mTexture;
+
+	OverlayImageBase( ) : mTexture( _null ) { }
+};
+
+struct OverlayPoint : public Renderable
+{
+	Vector2		mPosition;
+	Color		mColor;
+
+	OverlayPoint( )
+	{
+		mType		= _TYPE_OVERLAY_POINT;
+	}
+
+	OverlayPoint( const Vector2& pos, const Color& color )
+	{
+		mType		= _TYPE_OVERLAY_POINT;
+		mPosition	= pos;
+		mColor		= color;
+	}
+};
+
+struct OverlayLine : public Renderable
+{
+	Vector2		mPosition1;
+	Vector2		mPosition2;
+	Color		mColor1;
+	Color		mColor2;
+
+	OverlayLine( )
+	{
+		mType		= _TYPE_OVERLAY_LINE;
+	}
+
+	OverlayLine( const Vector2& pos1, const Vector2& pos2, const Color& color )
+	{
+		mType		= _TYPE_OVERLAY_LINE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mColor1		= color;
+		mColor2		= color;
+	}
+};
+
+struct OverlayTriangle : public Renderable
+{
+	Vector2		mPosition1;
+	Vector2		mPosition2;
+	Vector2		mPosition3;
+	_dword		mColor1;
+	_dword		mColor2;
+	_dword		mColor3;
+
+	OverlayTriangle( )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE;
+	}
+
+	OverlayTriangle( const Vector2& pos1, const Vector2& pos2, const Vector2& pos3, _dword color )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mColor1		= color;
+		mColor2		= color;
+		mColor3		= color;
+	}
+
+	OverlayTriangle( const Vector2& pos1, const Vector2& pos2, const Vector2& pos3, _dword color1, _dword color2, _dword color3 )
+	{
+		mType = _TYPE_OVERLAY_TRIANGLE;
+		mPosition1 = pos1;
+		mPosition2 = pos2;
+		mPosition3 = pos3;
+		mColor1 = color1;
+		mColor2 = color2;
+		mColor3 = color3;
+	}
+};
+
+struct OverlayTriangleImage : public OverlayImageBase
+{
+	Vector2		mPosition1;
+	Vector2		mPosition2;
+	Vector2		mPosition3;
+	Vector2		mTexcoord1;
+	Vector2		mTexcoord2;
+	Vector2		mTexcoord3;
+	_dword		mColor1;
+	_dword		mColor2;
+	_dword		mColor3;
+
+	OverlayTriangleImage( )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE_IMAGE;
+	}
+
+	OverlayTriangleImage( const Vector2& pos1, const Vector2& pos2, const Vector2& pos3,
+		const Vector2& tex1, const Vector2& tex2, const Vector2& tex3, _dword color, ITexture* texture )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE_IMAGE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mTexcoord1	= tex1;
+		mTexcoord2	= tex2;
+		mTexcoord3	= tex3;
+		mColor1		= color;
+		mColor2		= color;
+		mColor3		= color;
+		mTexture	= texture;
+	}
+};
+
+struct OverlayTriangleOnlyImage : public OverlayImageBase
+{
+	Vector2		mPosition1;
+	Vector2		mPosition2;
+	Vector2		mPosition3;
+	Vector2		mTexcoord1;
+	Vector2		mTexcoord2;
+	Vector2		mTexcoord3;
+
+	OverlayTriangleOnlyImage( )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE_ONLYIMAGE;
+	}
+
+	OverlayTriangleOnlyImage( const Vector2& pos1, const Vector2& pos2, const Vector2& pos3,
+		const Vector2& tex1, const Vector2& tex2, const Vector2& tex3, ITexture* texture )
+	{
+		mType		= _TYPE_OVERLAY_TRIANGLE_ONLYIMAGE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mTexcoord1	= tex1;
+		mTexcoord2	= tex2;
+		mTexcoord3	= tex3;
+		mTexture	= texture;
+	}
+};
+
 };
