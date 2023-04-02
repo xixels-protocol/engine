@@ -960,4 +960,177 @@ struct PrimitiveQuadrangleOnlyImage : public PrimitiveImageBase
 	}
 };
 
+struct PrimitiveBox : public Renderable
+{
+	Vector3		mCenter;
+	Vector3		mWidth;
+	Vector3		mHeight;
+	Vector3		mDepth;
+	_dword		mColor;
+
+	PrimitiveBox( )
+	{
+		mType		= _TYPE_PRIMITIVE_BOX;
+	}
+
+	PrimitiveBox( const AxisAlignedBox& boundbox, _dword color )
+	{
+		Vector3 Size = boundbox.Size( ) * 0.5f;
+
+		mType		= _TYPE_PRIMITIVE_BOX;
+		mCenter		= boundbox.Center( );
+		mWidth		= Vector3( Size.x, 0.0f, 0.0f );
+		mHeight		= Vector3( 0.0f, Size.y, 0.0f );
+		mDepth		= Vector3( 0.0f, 0.0f, Size.z );
+		mColor		= color;
+	}
+
+	PrimitiveBox( const Vector3& center, const Vector3& width, const Vector3& height, const Vector3& depth, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_BOX;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mDepth		= depth;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveCircle : public Renderable
+{
+	Vector3		mCenter;
+	Vector3		mNormal;
+	_float		mRadius;
+	_dword		mColor;
+	_dword		mSegment;
+
+	PrimitiveCircle( )
+	{
+		mType		= _TYPE_PRIMITIVE_CIRCLE;
+	}
+
+	PrimitiveCircle( const Vector3& center, const Vector3& normal, _float radius, _dword segment, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_CIRCLE;
+		mCenter		= center;
+		mNormal		= normal;
+		mRadius		= radius;
+		mSegment	= segment;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveSphere : public Renderable
+{
+	Vector3		mCenter;
+	_float		mRadius;
+	_dword		mSegment;
+	_dword		mColor;
+
+	PrimitiveSphere( )
+	{
+		mType		= _TYPE_PRIMITIVE_SPHERE;
+	}
+
+	PrimitiveSphere( const Vector3& center, _float radius, _dword segment, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_SPHERE;
+		mCenter		= center;
+		mRadius		= radius;
+		mSegment	= segment;
+		mColor		= color;
+	}
+};
+
+struct PrimitivePyramid : public Renderable
+{
+	Vector3		mBase;
+	Vector3		mPeak;
+	_float		mRadius;
+	_dword		mColor;
+
+	PrimitivePyramid( )
+	{
+		mType		= _TYPE_PRIMITIVE_PYRAMID;
+	}
+
+	PrimitivePyramid( const Vector3& base, const Vector3& peak, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_PYRAMID;
+		mBase		= base;
+		mPeak		= peak;
+		mRadius		= ( mPeak - mBase ).Magnitude( ) / 8;
+		mColor		= color;
+	}
+
+	PrimitivePyramid( const Vector3& base, const Vector3& peak, _float radius, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_PYRAMID;
+		mBase		= base;
+		mPeak		= peak;
+		mRadius		= radius;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveAxis : public Renderable
+{
+	Vector3		mOrigin;
+	Vector3		mXAxis;
+	Vector3		mYAxis;
+	Vector3		mZAxis;
+	_float		mLength;
+
+	PrimitiveAxis( )
+	{
+		mType		= _TYPE_PRIMITIVE_AXIS;
+	}
+
+	PrimitiveAxis( const Vector3& origin, _float length )
+	{
+		mType		= _TYPE_PRIMITIVE_AXIS;
+		mOrigin		= origin;
+		mXAxis		= Vector3::cXAxis;
+		mYAxis		= Vector3::cYAxis;
+		mZAxis		= Vector3::cZAxis;
+		mLength		= length;
+	}
+
+	PrimitiveAxis( const Matrix4& mat, _float length )
+	{
+		mType		= _TYPE_PRIMITIVE_AXIS;
+		mOrigin		= mat.GetTranslationVector( );
+		mXAxis		= Vector3::cXAxis * mat.GetRotationMatrix( );
+		mYAxis		= Vector3::cYAxis * mat.GetRotationMatrix( );
+		mZAxis		= Vector3::cZAxis * mat.GetRotationMatrix( );
+		mLength		= length;
+	}
+};
+
+struct PrimitiveFrustum : public Renderable
+{
+	OrientedBox	mFrustum;
+	_dword		mColor;
+
+	PrimitiveFrustum( )
+	{
+		mType		= _TYPE_PRIMITIVE_FRUSTUM;
+	}
+
+	PrimitiveFrustum( const Frustum& frustum, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_FRUSTUM;
+		mColor		= color;
+
+		Memory::MemCpy( mFrustum.vs, frustum.vs, sizeof( mFrustum.vs ) );
+	}
+
+	PrimitiveFrustum( const OrientedBox& frustum, _dword color )
+	{
+		mType		= _TYPE_PRIMITIVE_FRUSTUM;
+		mFrustum	= frustum;
+		mColor		= color;
+	}
+};
+
 };
