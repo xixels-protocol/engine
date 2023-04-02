@@ -619,4 +619,345 @@ struct OverlayConvexPolygon : public Renderable
 	}
 };
 
+struct PrimitiveImageBase : public Renderable
+{
+	ITexture*	mTexture;
+
+	PrimitiveImageBase( ) : mTexture( _null ) { }
+};
+
+struct PrimitivePoint : public Renderable
+{
+	Vector3		mPosition;
+	Color		mColor;
+
+	PrimitivePoint( )
+	{
+		mType		= _TYPE_PRIMITIVE_POINT;
+	}
+
+	PrimitivePoint( const Vector3& pos, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_POINT;
+		mPosition	= pos;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveLine : public Renderable
+{
+	Vector3		mPosition1;
+	Vector3		mPosition2;
+	Color		mColor1;
+	Color		mColor2;
+
+	PrimitiveLine( )
+	{
+		mType		= _TYPE_PRIMITIVE_LINE;
+	}
+
+	PrimitiveLine( const Vector3& pos1, const Vector3& pos2, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_LINE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mColor1		= color;
+		mColor2		= color;
+	}
+
+	PrimitiveLine( const Vector3& pos1, const Vector3& pos2, const Color& color1, const Color& color2 )
+	{
+		mType		= _TYPE_PRIMITIVE_LINE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mColor1		= color1;
+		mColor2		= color2;
+	}
+};
+
+struct PrimitiveTriangle : public Renderable
+{
+	Vector3		mPosition1;
+	Vector3		mPosition2;
+	Vector3		mPosition3;
+	Color		mColor1;
+	Color		mColor2;
+	Color		mColor3;
+
+	PrimitiveTriangle( )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE;
+	}
+
+	PrimitiveTriangle( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mColor1		= color;
+		mColor2		= color;
+		mColor3		= color;
+	}
+
+	PrimitiveTriangle( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3, const Color& color1, const Color& color2, const Color& color3 )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mColor1		= color1;
+		mColor2		= color2;
+		mColor3		= color3;
+	}
+};
+
+struct PrimitiveTriangleFill : public Renderable
+{
+	Vector3		mPosition1;
+	Vector3		mPosition2;
+	Vector3		mPosition3;
+	Color		mColor1;
+	Color		mColor2;
+	Color		mColor3;
+
+	PrimitiveTriangleFill( )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_FILL;
+	}
+
+	PrimitiveTriangleFill( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_FILL;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mColor1		= color;
+		mColor2		= color;
+		mColor3		= color;
+	}
+
+	PrimitiveTriangleFill( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3, const Color& color1, const Color& color2, const Color& color3 )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_FILL;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mColor1		= color1;
+		mColor2		= color2;
+		mColor3		= color3;
+	}
+};
+
+struct PrimitiveTriangleImage : public PrimitiveImageBase
+{
+	Vector3		mPosition1;
+	Vector3		mPosition2;
+	Vector3		mPosition3;
+	Vector2		mTexcoord1;
+	Vector2		mTexcoord2;
+	Vector2		mTexcoord3;
+	Color		mColor1;
+	Color		mColor2;
+	Color		mColor3;
+
+	PrimitiveTriangleImage( )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_IMAGE;
+	}
+
+	PrimitiveTriangleImage( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3,
+		const Vector2& tex1, const Vector2& tex2, const Vector2& tex3, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_IMAGE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mTexcoord1	= tex1;
+		mTexcoord2	= tex2;
+		mTexcoord3	= tex3;
+		mColor1		= color;
+		mColor2		= color;
+		mColor3		= color;
+		mTexture	= texture;
+	}
+
+	PrimitiveTriangleImage( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3,
+		const Vector2& tex1, const Vector2& tex2, const Vector2& tex3, const Color& color1, const Color& color2, const Color& color3, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_IMAGE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mTexcoord1	= tex1;
+		mTexcoord2	= tex2;
+		mTexcoord3	= tex3;
+		mColor1		= color1;
+		mColor2		= color2;
+		mColor3		= color3;
+		mTexture	= texture;
+	}
+};
+
+struct PrimitiveTriangleOnlyImage : public PrimitiveImageBase
+{
+	Vector3		mPosition1;
+	Vector3		mPosition2;
+	Vector3		mPosition3;
+	Vector2		mTexcoord1;
+	Vector2		mTexcoord2;
+	Vector2		mTexcoord3;
+
+	PrimitiveTriangleOnlyImage( )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_ONLYIMAGE;
+	}
+
+	PrimitiveTriangleOnlyImage( const Vector3& pos1, const Vector3& pos2, const Vector3& pos3,
+		const Vector2& tex1, const Vector2& tex2, const Vector2& tex3, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_TRIANGLE_ONLYIMAGE;
+		mPosition1	= pos1;
+		mPosition2	= pos2;
+		mPosition3	= pos3;
+		mTexcoord1	= tex1;
+		mTexcoord2	= tex2;
+		mTexcoord3	= tex3;
+		mTexture	= texture;
+	}
+};
+
+struct PrimitiveQuadrangle : public Renderable
+{
+	Vector3		mCenter;
+	Vector3		mWidth;
+	Vector3		mHeight;
+	Color		mColor;
+
+	PrimitiveQuadrangle( )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE;
+	}
+
+	PrimitiveQuadrangle( const Vector3& center, const Vector3& width, const Vector3& height, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveQuadrangleFill : public Renderable
+{
+	Vector3		mCenter;
+	Vector3		mWidth;
+	Vector3		mHeight;
+	Color		mColor;
+
+	PrimitiveQuadrangleFill( )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_FILL;
+	}
+
+	PrimitiveQuadrangleFill( const Vector3& center, const Vector3& width, const Vector3& height, const Color& color )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_FILL;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mColor		= color;
+	}
+};
+
+struct PrimitiveQuadrangleImage : public PrimitiveImageBase
+{
+	Vector3		mCenter;
+	Vector3		mWidth;
+	Vector3		mHeight;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+	Color		mColor;
+
+	PrimitiveQuadrangleImage( )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_IMAGE;
+	}
+
+	PrimitiveQuadrangleImage( const Vector3& center, const Vector3& width, const Vector3& height, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_IMAGE;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mColor		= color;
+		mTexture	= texture;
+	}
+
+	PrimitiveQuadrangleImage( const Vector3& center, const Vector3& width, const Vector3& height, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_IMAGE;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mTexture	= texture;
+	}
+};
+
+struct PrimitiveQuadrangleOnlyImage : public PrimitiveImageBase
+{
+	Vector3		mCenter;
+	Vector3		mWidth;
+	Vector3		mHeight;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+
+	PrimitiveQuadrangleOnlyImage( )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_ONLYIMAGE;
+	}
+
+	PrimitiveQuadrangleOnlyImage( const Vector3& center, const Vector3& width, const Vector3& height, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_ONLYIMAGE;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mTexture	= texture;
+	}
+
+	PrimitiveQuadrangleOnlyImage( const Vector3& center, const Vector3& width, const Vector3& height, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, ITexture* texture )
+	{
+		mType		= _TYPE_PRIMITIVE_QUADRANGLE_ONLYIMAGE;
+		mCenter		= center;
+		mWidth		= width;
+		mHeight		= height;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mTexture	= texture;
+	}
+};
+
 };
