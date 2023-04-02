@@ -64,10 +64,6 @@ struct Renderable
 		: mType( 0 ) { }
 };
 
-//----------------------------------------------------------------------------
-// Geometry
-//----------------------------------------------------------------------------
-
 struct Geometry : public Renderable
 {
 	typedef _void (*OnRender)( Geometry& geo );
@@ -1130,6 +1126,397 @@ struct PrimitiveFrustum : public Renderable
 		mType		= _TYPE_PRIMITIVE_FRUSTUM;
 		mFrustum	= frustum;
 		mColor		= color;
+	}
+};
+
+struct BillboardBase : public Renderable
+{
+	Vector3		mPosition;
+	Vector2		mPosOffset;
+	Vector2		mSize;
+	Vector2		mTexcoordLT;
+	Vector2		mTexcoordRT;
+	Vector2		mTexcoordLB;
+	Vector2		mTexcoordRB;
+
+	ITexture*	mTexture;
+
+	BillboardBase( ) : mTexture( _null ) { }
+};
+
+struct BillboardScreenAligned : public BillboardBase
+{
+	Color		mColor;
+	_float		mRotation;
+
+	BillboardScreenAligned( )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED;
+	}
+
+	BillboardScreenAligned( const Vector3& pos, const Vector2& size, Color color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardScreenAligned( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, Color color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardScreenAligned( const Vector3& pos, const Vector2& posoffset, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, Color color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardScreenAligned( const Vector3& pos, const Vector2& posoffset, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, Color color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+};
+
+struct BillboardScreenAlignedOnlyImage : public BillboardBase
+{
+	_float		mRotation;
+
+	BillboardScreenAlignedOnlyImage( )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED_ONLYIMAGE;
+	}
+
+	BillboardScreenAlignedOnlyImage( const Vector3& pos, const Vector2& size, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardScreenAlignedOnlyImage( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardScreenAlignedOnlyImage( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_SCREENALIGNED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+};
+
+struct BillboardWorldOriented : public BillboardBase
+{
+	Color		mColor;
+	_float		mRotation;
+
+	BillboardWorldOriented( )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED;
+	}
+
+	BillboardWorldOriented( const Vector3& pos, const Vector2& size, const Color& color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardWorldOriented( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, const Color& color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardWorldOriented( const Vector3& pos, const Vector2& posoffset, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, const Color& color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardWorldOriented( const Vector3& pos, const Vector2& posoffset, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, const Color& color, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+};
+
+struct BillboardWorldOrientedOnlyImage : public BillboardBase
+{
+	_float		mRotation;
+
+	BillboardWorldOrientedOnlyImage( )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED_ONLYIMAGE;
+	}
+
+	BillboardWorldOrientedOnlyImage( const Vector3& pos, const Vector2& size, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardWorldOrientedOnlyImage( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrb, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+
+	BillboardWorldOrientedOnlyImage( const Vector3& pos, const Vector2& size, const Vector2& texlt,
+		const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, _float rot, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_WORLDORIENTED_ONLYIMAGE;
+		mPosition	= pos;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mRotation	= rot;
+		mTexture	= texture;
+	}
+};
+
+struct BillboardAxial : public BillboardBase
+{
+	Color		mColor;
+	Vector3		mAxis;
+
+	BillboardAxial( )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL;
+	}
+
+	BillboardAxial( const Vector3& pos, const Vector3& axis, const Vector2& size, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mColor		= color;
+		mTexture	= texture;
+	}
+
+	BillboardAxial( const Vector3& pos, const Vector3& axis, const Vector2& size,
+		const Vector2& texlt, const Vector2& texrb, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL;
+		mPosition	= pos;
+		mPosOffset	= Vector2::cOrigin;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mTexture	= texture;
+	}
+
+	BillboardAxial( const Vector3& pos, const Vector2& posoffset, const Vector3& axis, const Vector2& size,
+		const Vector2& texlt, const Vector2& texrb, const Color& color, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mTexture	= texture;
+	}
+
+	BillboardAxial( const Vector3& pos, const Vector2& posoffset, const Vector3& axis, const Vector2& size,
+		const Vector2& texlt, const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, const Color& color,
+		ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL;
+		mPosition	= pos;
+		mPosOffset	= posoffset;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mColor		= color;
+		mTexture	= texture;
+	}
+};
+
+struct BillboardAxialOnlyImage : public BillboardBase
+{
+	Vector3		mAxis;
+
+	BillboardAxialOnlyImage( )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL_ONLYIMAGE;
+	}
+
+	BillboardAxialOnlyImage( const Vector3& pos, const Vector3& axis, const Vector2& size, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL_ONLYIMAGE;
+		mPosition	= pos;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= Vector2::cOrigin;
+		mTexcoordRT	= Vector2( 1.0f, 0.0f );
+		mTexcoordLB	= Vector2( 0.0f, 1.0f );
+		mTexcoordRB	= Vector2( 1.0f, 1.0f );
+		mTexture	= texture;
+	}
+
+	BillboardAxialOnlyImage( const Vector3& pos, const Vector3& axis, const Vector2& size,
+		const Vector2& texlt, const Vector2& texrb, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL_ONLYIMAGE;
+		mPosition	= pos;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= Vector2( texrb.x ,texlt.y );
+		mTexcoordLB	= Vector2( texlt.x ,texrb.y );
+		mTexcoordRB	= texrb;
+		mTexture	= texture;
+	}
+
+	BillboardAxialOnlyImage( const Vector3& pos, const Vector3& axis, const Vector2& size,
+		const Vector2& texlt, const Vector2& texrt, const Vector2& texlb, const Vector2& texrb, ITexture* texture )
+	{
+		mType		= _TYPE_BILLBOARD_AXIAL_ONLYIMAGE;
+		mPosition	= pos;
+		mAxis		= axis;
+		mSize		= size;
+		mTexcoordLT	= texlt;
+		mTexcoordRT	= texrt;
+		mTexcoordLB	= texlb;
+		mTexcoordRB	= texrb;
+		mTexture	= texture;
 	}
 };
 
