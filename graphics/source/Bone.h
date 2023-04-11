@@ -18,7 +18,7 @@ private:
 	_ptr				mUserData;
 	_dword				mBoneID;
 	_dword				mParentID;
-
+	_bool				mDummy;
 	_float				mSize;
 
 	Vector3				mInitTranslation;
@@ -52,6 +52,8 @@ public:
 		{ return mBoneID; }
 	virtual _dword GetParentID( ) const
 		{ return mParentID; }
+	virtual _bool IsDummy( ) const
+		{ return mDummy; }
 
 	virtual _float GetSize( ) const
 		{ return mSize; }
