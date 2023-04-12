@@ -16,15 +16,17 @@ public:
 	_float		mPrecomputeTheta;
 	_float		mPrecomputeRecipsqrt;
 	Vector3		mPrecomputeScalingLerp;
+	
+	_bool		mNeedScaling;
 
 public:
 	inline SkeletonAnimaKeyframe( ) : mTime( 0.0f ), mTranslation( Vector3::cOrigin ), mRotation( Quaternion::cIdentity ), 
 		mScaling( Vector3::cIdentity ), mPrecomputeTranslationLerp( Vector3::cOrigin ), mPrecomputeDot( 0.0f ), mPrecomputeTheta( 0.0f ), 
-		mPrecomputeRecipsqrt( 0.0f ), mPrecomputeScalingLerp( Vector3::cOrigin ) { }
+		mPrecomputeRecipsqrt( 0.0f ), mPrecomputeScalingLerp( Vector3::cOrigin ), mNeedScaling( _false ) { }
 
 	inline SkeletonAnimaKeyframe( _float time ) : mTime( time ), mTranslation( Vector3::cOrigin ), mRotation( Quaternion::cIdentity ), 
 		mScaling( Vector3::cIdentity ), mPrecomputeTranslationLerp( Vector3::cOrigin ), mPrecomputeDot( 0.0f ), mPrecomputeTheta( 0.0f ), 
-		mPrecomputeRecipsqrt( 0.0f ), mPrecomputeScalingLerp( Vector3::cOrigin ) { }
+		mPrecomputeRecipsqrt( 0.0f ), mPrecomputeScalingLerp( Vector3::cOrigin ), mNeedScaling( _false ) { }
 
 	inline operator _float ( ) const
 		{ return mTime; }
