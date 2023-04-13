@@ -3,7 +3,7 @@
 namespace Xixels
 {
 
-class SkeletonAnima : public ISkeletonAnima, public ReferencedObject
+class SkeletonAnima : public ISkeletonAnima, public ReferencedObject, public Animation
 {
 private:
 	SkeletonAnima*	mResource;
