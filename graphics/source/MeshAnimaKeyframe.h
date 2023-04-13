@@ -54,6 +54,8 @@ public:
 
 	virtual _void			SetVertexTexcoord( _dword index, _dword tex, const Vector2& texc );
 	virtual const Vector2&	GetVertexTexcoord( _dword index, _dword tex ) const;
+
+	virtual _byte*			LockKeyframeBuffer( );
 };
 
 };
