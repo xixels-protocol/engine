@@ -58,4 +58,19 @@ public:
 	virtual _byte*			LockKeyframeBuffer( );
 };
 
+class MeshAnimaKeyframeRef
+{
+public:
+	MeshAnimaKeyframe*	mRef;
+
+public:
+	inline MeshAnimaKeyframeRef( ) : mRef( _null )
+		{ }
+	inline MeshAnimaKeyframeRef( MeshAnimaKeyframe* ref ) : mRef( ref )
+		{ }
+
+	inline operator _float( ) const
+		{ return mRef->mTime; }
+};
+
 };
