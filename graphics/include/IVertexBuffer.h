@@ -4,6 +4,24 @@ namespace Xixels
 {
 
 public:
+
+	enum _FORMAT_FLAG
+	{
+		_FORMAT_START			= 0x00000001,
+		_FORMAT_POSITION		= 0x00000001,
+		_FORMAT_NORMAL			= 0x00000002,
+		_FORMAT_TANGENT			= 0x00000004,
+		_FORMAT_DIFFUSE			= 0x00000008,
+		_FORMAT_TEXCOORD1		= 0x00000010,
+		_FORMAT_TEXCOORD2		= 0x00000020,
+		_FORMAT_TEXCOORD3		= 0x00000040,
+		_FORMAT_TEXCOORD4		= 0x00000080,
+		_FORMAT_INFLUENCE		= 0x00000100,
+		_FORMAT_BONEBLEND		= 0x00000200,
+		_FORMAT_END				= 0x00000200,
+	};
+
+public:
 	// Get buffer type.
 	virtual _dword	GetType( ) const = 0;
 	// Get length of buffer in bytes.
