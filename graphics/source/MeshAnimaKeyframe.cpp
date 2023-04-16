@@ -37,3 +37,27 @@ _void MeshAnimaKeyframe::ChangeResObject( )
 
 	mBufferOwner = _true;
 }
+
+_byte* MeshAnimaKeyframe::GetVertexBufferToWrite( _dword index, _dword field )
+{
+	if ( index >= mVertexCount )
+		return _null;
+
+	if ( ( mVertexFormat & field ) == 0 )
+		return _null;
+
+	ChangeResObject( );
+
+	return mKeyframeBuffer + index * mVertexSize + ModelHelper::GetVertexFieldOffset( mVertexFormat, field );
+}
+
+const _byte* MeshAnimaKeyframe::GetVertexBufferToRead( _dword index, _dword field ) const
+{
+	if ( index >= mVertexCount )
+		return _null;
+
+	if ( ( mVertexFormat & field ) == 0 )
+		return _null;
+
+	return mKeyframeBuffer + index * mVertexSize + ModelHelper::GetVertexFieldOffset( mVertexFormat, field );
+}
