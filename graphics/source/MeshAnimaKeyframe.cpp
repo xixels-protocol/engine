@@ -133,3 +133,10 @@ const Vector2& MeshAnimaKeyframe::GetVertexTexcoord( _dword index, _dword tex ) 
 	const _byte* buffer = GetVertexBufferToRead( index, field );
 	return buffer != _null ? *( (const Vector2*) buffer ) : Vector2::cOrigin;
 }
+
+_byte* MeshAnimaKeyframe::LockKeyframeBuffer( )
+{
+	ChangeResObject( );
+
+	return mKeyframeBuffer;
+}
