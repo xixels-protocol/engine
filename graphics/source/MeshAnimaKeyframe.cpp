@@ -61,3 +61,75 @@ const _byte* MeshAnimaKeyframe::GetVertexBufferToRead( _dword index, _dword fiel
 
 	return mKeyframeBuffer + index * mVertexSize + ModelHelper::GetVertexFieldOffset( mVertexFormat, field );
 }
+
+_void MeshAnimaKeyframe::SetVertexPosition( _dword index, const Vector3& pos )
+{
+	_byte* buffer = GetVertexBufferToWrite( index, IVertexBuffer::_FORMAT_POSITION );
+	if ( buffer != _null )
+		*( (Vector3*) buffer ) = pos;
+}
+
+const Vector3& MeshAnimaKeyframe::GetVertexPosition( _dword index ) const
+{
+	const _byte* buffer = GetVertexBufferToRead( index, IVertexBuffer::_FORMAT_POSITION );
+	return buffer != _null ? *( (const Vector3*) buffer ) : Vector3::cOrigin;
+}
+
+_void MeshAnimaKeyframe::SetVertexNormal( _dword index, const Vector3& nor )
+{
+	_byte* buffer = GetVertexBufferToWrite( index, IVertexBuffer::_FORMAT_NORMAL );
+	if ( buffer != _null )
+		*( (Vector3*) buffer ) = nor;
+}
+
+const Vector3& MeshAnimaKeyframe::GetVertexNormal( _dword index ) const
+{
+	const _byte* buffer = GetVertexBufferToRead( index, IVertexBuffer::_FORMAT_NORMAL );
+	return buffer != _null ? *( (const Vector3*) buffer ) : Vector3::cOrigin;
+}
+
+_void MeshAnimaKeyframe::SetVertexDiffuse( _dword index, _dword col )
+{
+	_byte* buffer = GetVertexBufferToWrite( index, IVertexBuffer::_FORMAT_DIFFUSE );
+	if ( buffer != _null )
+		*( (_dword*) buffer ) = col;
+}
+
+_dword MeshAnimaKeyframe::GetVertexDiffuse( _dword index ) const
+{
+	const _byte* buffer = GetVertexBufferToRead( index, IVertexBuffer::_FORMAT_DIFFUSE );
+	return buffer != _null ? *( (const _dword*) buffer ) : 0;
+}
+
+_void MeshAnimaKeyframe::SetVertexTexcoord( _dword index, _dword tex, const Vector2& texc )
+{
+	_dword field = 0;
+	if ( tex == 1 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD1;
+	else if ( tex == 2 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD2;
+	else if ( tex == 3 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD3;
+	else if ( tex == 4 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD4;
+
+	_byte* buffer = GetVertexBufferToWrite( index, field );
+	if ( buffer != _null )
+		*( (Vector2*) buffer ) = texc;
+}
+
+const Vector2& MeshAnimaKeyframe::GetVertexTexcoord( _dword index, _dword tex ) const
+{
+	_dword field = 0;
+	if ( tex == 1 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD1;
+	else if ( tex == 2 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD2;
+	else if ( tex == 3 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD3;
+	else if ( tex == 4 )
+		field = IVertexBuffer::_FORMAT_TEXCOORD4;
+
+	const _byte* buffer = GetVertexBufferToRead( index, field );
+	return buffer != _null ? *( (const Vector2*) buffer ) : Vector2::cOrigin;
+}
