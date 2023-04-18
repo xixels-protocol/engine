@@ -13,6 +13,11 @@ public:
 	Skeleton( );
 	Skeleton( Skeleton* skeleton );
 	~Skeleton( );
+
+	inline _void AttachResource( Skeleton* res )
+		{ if ( mResource != _null ) return; mResource = res; if ( res != _null ) res->IncRefCount( ); }
+
+	_void UpdateBones( _dword elapse = 0 );
 };
 
 };
