@@ -19,6 +19,7 @@ public:
 
 	_void UpdateBones( _dword elapse = 0 );
 
+public:
 	virtual _dword GetBoneCount( ) const
 		{ return mBones.Length( ); }
 	virtual IBone* GetBone( _dword index ) const
@@ -30,7 +31,17 @@ public:
 
 	virtual IBone*			GetBone( StringPtr name ) const;
 
+	virtual _void			SetInfluence( ISkeletonInf* inf );
+	virtual ISkeletonInf*	GetInfluence( );
+
+	virtual _void			SetFrameToken( _dword token );
+	virtual _dword			GetFrameToken( ) const;
+
+	virtual _dword			GetSkinBoneCount( ) const;
+	virtual _void			TransferSkinTransform( Geometry& geo ) const;
+
 	virtual _void			Skinning( Geometry& geo );
+	virtual const AxisAlignedBox&	GetBoundBox( ) const;
 };
 
 };
