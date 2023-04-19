@@ -31,9 +31,6 @@ public:
 
 	virtual IBone*			GetBone( StringPtr name ) const;
 
-	virtual _void			SetInfluence( ISkeletonInf* inf );
-	virtual ISkeletonInf*	GetInfluence( );
-
 	virtual _void			SetFrameToken( _dword token );
 	virtual _dword			GetFrameToken( ) const;
 
