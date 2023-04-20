@@ -7,8 +7,10 @@ class Skeleton : public ISkeleton, public ReferencedObject
 {
 private:
 	Skeleton*				mResource;
+	AxisAlignedBox			mBoundBox;
 	Array< Bone* >			mBones;
 
+	_dword					mFrameToken;
 public:
 	Skeleton( );
 	Skeleton( Skeleton* skeleton );
