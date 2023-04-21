@@ -37,3 +37,36 @@ Matrix3x4& Matrix3x4::Translation( _float x, _float y, _float z )
 
 	return *this;
 }
+
+Matrix3x4& Matrix3x4::RotationX( _float r )
+{
+	_float sinvalue = Math::Sin( r ), cosvalue = Math::Cos( r );
+
+	m[0][0]	= 1.0f; m[1][0] =       0.0f; m[2][0] =     0.0f;
+	m[0][1] = 0.0f; m[1][1] =   cosvalue; m[2][1] = sinvalue;
+	m[0][2] = 0.0f; m[1][2] = - sinvalue; m[2][2] = cosvalue;
+
+	return *this;
+}
+
+Matrix3x4& Matrix3x4::RotationY( _float r )
+{
+	_float sinvalue = Math::Sin( r ), cosvalue = Math::Cos( r );
+
+	m[0][0]	= cosvalue; m[1][0] = 0.0f; m[2][0] = - sinvalue;
+	m[0][1] =     0.0f; m[1][1] = 1.0f; m[2][1] =       0.0f;
+	m[0][2] = sinvalue; m[1][2] = 0.0f; m[2][2] =   cosvalue;
+
+	return *this;
+}
+
+Matrix3x4& Matrix3x4::RotationZ( _float r )
+{
+	_float sinvalue = Math::Sin( r ), cosvalue = Math::Cos( r );
+
+	m[0][0]	=   cosvalue; m[1][0] = sinvalue; m[2][0] = 0.0f;
+	m[0][1] = - sinvalue; m[1][1] = cosvalue; m[2][1] = 0.0f;
+	m[0][2] =       0.0f; m[1][2] =     0.0f; m[2][2] = 1.0f;
+
+	return *this;
+}
