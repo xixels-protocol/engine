@@ -33,6 +33,8 @@ public:
 		{ mFrameToken = token; }
 	virtual _dword GetFrameToken( ) const
 		{ return mFrameToken; }
+	virtual const AxisAlignedBox& GetBoundBox( ) const
+		{ return mBoundBox; }
 	virtual IBone*			CreateBone( StringPtr name, _dword parentid, _bool dummy );
 	virtual _void			ReleaseBone( IBone*& bone );
 	virtual _void			ClearBone( );
@@ -43,7 +45,7 @@ public:
 	virtual _void			TransferSkinTransform( Geometry& geo ) const;
 
 	virtual _void			Skinning( Geometry& geo );
-	virtual const AxisAlignedBox&	GetBoundBox( ) const;
+
 };
 
 };
