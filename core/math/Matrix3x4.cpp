@@ -27,3 +27,13 @@ _bool Matrix3x4::operator == ( const Matrix3x4& mat ) const
 			m[1][0] == mat.m[1][0] && m[1][1] == mat.m[1][1] && m[1][2] == mat.m[1][2] && m[1][3] == mat.m[1][3] &&
 			m[2][0] == mat.m[2][0] && m[2][1] == mat.m[2][1] && m[2][2] == mat.m[2][2] && m[2][3] == mat.m[2][3];
 }
+
+Matrix3x4& Matrix3x4::Translation( _float x, _float y, _float z )
+{
+	m[0][0] = 1.0f; m[1][0] = 0.0f; m[2][0] = 0.0f;
+	m[0][1] = 0.0f; m[1][1] = 1.0f; m[2][1] = 0.0f;
+	m[0][2] = 0.0f; m[1][2] = 0.0f; m[2][2] = 1.0f;
+	m[0][3] =    x; m[1][3] =    y; m[2][3] =    z;
+
+	return *this;
+}
