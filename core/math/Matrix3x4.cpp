@@ -111,3 +111,20 @@ _void Matrix3x4::Decompose( Vector3& t, Matrix3& r, Vector3& s ) const
 	r.m[1][0] = cols[1].x; r.m[1][1] = cols[1].y; r.m[1][2] = cols[1].z;
 	r.m[2][0] = cols[2].x; r.m[2][1] = cols[2].y; r.m[2][2] = cols[2].z;
 }
+
+Matrix3x4& Matrix3x4::Compose( const Matrix4& mat )
+{
+	m[0][0] = mat.m[0][0]; m[0][1] = mat.m[1][0]; m[0][2] = mat.m[2][0]; m[0][3] = mat.m[3][0];
+	m[1][0] = mat.m[0][1]; m[1][1] = mat.m[1][1]; m[1][2] = mat.m[2][1]; m[1][3] = mat.m[3][1];
+	m[2][0] = mat.m[0][2]; m[2][1] = mat.m[1][2]; m[2][2] = mat.m[2][2]; m[2][3] = mat.m[3][2];
+
+	return *this;
+}
+
+_void Matrix3x4::Decompose( Matrix4& mat ) const
+{
+	mat.m[0][0] = m[0][0]; mat.m[0][1] = m[1][0]; mat.m[0][2] = m[2][0]; mat.m[0][3] = 0.0f;
+	mat.m[1][0] = m[0][1]; mat.m[1][1] = m[1][1]; mat.m[1][2] = m[2][1]; mat.m[1][3] = 0.0f;
+	mat.m[2][0] = m[0][2]; mat.m[2][1] = m[1][2]; mat.m[2][2] = m[2][2]; mat.m[2][3] = 0.0f;
+	mat.m[3][0] = m[0][3]; mat.m[3][1] = m[1][3]; mat.m[3][2] = m[2][3]; mat.m[3][3] = 1.0f;
+}
