@@ -70,3 +70,44 @@ Matrix3x4& Matrix3x4::RotationZ( _float r )
 
 	return *this;
 }
+
+Matrix3x4& Matrix3x4::Compose( const Vector3& t, const Matrix3& r, const Vector3& s )
+{
+	m[0][0] = r.m[0][0]; m[1][0] = r.m[0][1]; m[2][0] = r.m[0][2];
+	m[0][1] = r.m[1][0]; m[1][1] = r.m[1][1]; m[2][1] = r.m[1][2];
+	m[0][2] = r.m[2][0]; m[1][2] = r.m[2][1]; m[2][2] = r.m[2][2];
+	m[0][3] =       t.x; m[1][3] =       t.y; m[2][3] =       t.z;
+
+	if ( s.x != 1.0f )
+		{ m[0][0] *= s.x; m[1][0] *= s.x; m[2][0] *= s.x; }
+	if ( s.y != 1.0f )
+		{ m[0][1] *= s.y; m[1][1] *= s.y; m[2][1] *= s.y; }
+	if ( s.z != 1.0f )
+		{ m[0][2] *= s.z; m[1][2] *= s.z; m[2][2] *= s.z; }
+
+	return *this;
+}
+
+_void Matrix3x4::Decompose( Vector3& t, Matrix3& r, Vector3& s ) const
+{
+	t.x = m[0][3];
+	t.y = m[1][3];
+	t.z = m[2][3];
+
+	Vector3 cols[3] = { Vector3( m[0][0], m[1][0], m[2][0] ), Vector3( m[0][1], m[1][1], m[2][1] ), Vector3( m[0][2], m[1][2], m[2][2] ) };
+
+	s.x = cols[0].Magnitude( );
+	s.y = cols[1].Magnitude( );
+	s.z = cols[2].Magnitude( );
+
+	if ( s.x != 0.0f )
+		{ cols[0].x /= s.x; cols[0].y /= s.x; cols[0].z /= s.x; }
+	if ( s.y != 0.0f )
+		{ cols[1].x /= s.y; cols[1].y /= s.y; cols[1].z /= s.y; }
+	if ( s.z != 0.0f )
+		{ cols[2].x /= s.z; cols[2].y /= s.z; cols[2].z /= s.z; }
+
+	r.m[0][0] = cols[0].x; r.m[0][1] = cols[0].y; r.m[0][2] = cols[0].z;
+	r.m[1][0] = cols[1].x; r.m[1][1] = cols[1].y; r.m[1][2] = cols[1].z;
+	r.m[2][0] = cols[2].x; r.m[2][1] = cols[2].y; r.m[2][2] = cols[2].z;
+}
