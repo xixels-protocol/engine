@@ -8,6 +8,8 @@ class Skeleton : public ISkeleton, public ReferencedObject
 private:
 	Skeleton*				mResource;
 	AxisAlignedBox			mBoundBox;
+
+	MemoryBuffer			mMemoryBuffer;
 	Array< Bone* >			mBones;
 
 	_dword					mFrameToken;
