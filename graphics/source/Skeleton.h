@@ -29,14 +29,15 @@ public:
 	virtual IBone* GetBone( _dword index ) const
 		{ return mBones.IsIndexValid( (_long) index ) ? mBones[ index ] : _null; }
 
+	virtual _void SetFrameToken( _dword token )
+		{ mFrameToken = token; }
+	virtual _dword GetFrameToken( ) const
+		{ return mFrameToken; }
 	virtual IBone*			CreateBone( StringPtr name, _dword parentid, _bool dummy );
 	virtual _void			ReleaseBone( IBone*& bone );
 	virtual _void			ClearBone( );
 
 	virtual IBone*			GetBone( StringPtr name ) const;
-
-	virtual _void			SetFrameToken( _dword token );
-	virtual _dword			GetFrameToken( ) const;
 
 	virtual _dword			GetSkinBoneCount( ) const;
 	virtual _void			TransferSkinTransform( Geometry& geo ) const;
