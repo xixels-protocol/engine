@@ -12,6 +12,10 @@ private:
 	MemoryBuffer			mMemoryBuffer;
 	Array< Bone* >			mBones;
 
+
+	Matrix3x4*				mSkinTransform;
+	_dword					mSkinBoneCount;
+
 	_dword					mFrameToken;
 public:
 	Skeleton( );
@@ -21,6 +25,8 @@ public:
 	inline _void AttachResource( Skeleton* res )
 		{ if ( mResource != _null ) return; mResource = res; if ( res != _null ) res->IncRefCount( ); }
 
+	inline const Matrix3x4* GetSkinTransform( ) const
+		{ return mSkinTransform; }
 	_void UpdateBones( _dword elapse = 0 );
 
 public:
