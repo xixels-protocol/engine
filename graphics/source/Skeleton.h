@@ -12,11 +12,12 @@ private:
 	MemoryBuffer			mMemoryBuffer;
 	Array< Bone* >			mBones;
 
-
+	_byte*					mSkinBuffer;
 	Matrix3x4*				mSkinTransform;
 	_dword					mSkinBoneCount;
 
 	_dword					mFrameToken;
+	_bool					mNeedToUpdate;
 public:
 	Skeleton( );
 	Skeleton( Skeleton* skeleton );
