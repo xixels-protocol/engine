@@ -50,6 +50,26 @@ typedef float				_float;
 // 64-bits floating point number.
 typedef double				_double;
 
+#ifdef _EXTEND_INSTRUCTIONS
+
+#if !defined( _XX_OS_IOS ) && !defined( _XX_OS_ANDROID )
+
+// 64-bits float list.
+typedef __m64				_float2;
+// 128-bits float list.
+typedef __m128				_float4;
+
+#else
+
+// 64-bits float list.
+typedef float32x2_t			_float2;
+// 128-bits float list.
+typedef float32x4_t			_float4;
+
+#endif
+
+#else
+
 typedef struct float2
 {
 	_float x;
