@@ -50,4 +50,18 @@ typedef float				_float;
 // 64-bits floating point number.
 typedef double				_double;
 
+typedef struct float2
+{
+	_float x;
+	_float y;
+} _float2;
+
+typedef struct float4
+{
+	_float x;
+	_float y;
+	_float z;
+	_float w;
+} _float4;
+
 };
