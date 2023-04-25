@@ -26,6 +26,8 @@ private:
 
 	_byte*					mSkinBuffer;
 	Matrix3x4*				mSkinTransform;
+
+	_dword					mBigBoneCount;
 	_dword					mSkinBoneCount;
 
 	_dword					mFrameToken;
@@ -41,6 +43,11 @@ public:
 
 	inline const Matrix3x4* GetSkinTransform( ) const
 		{ return mSkinTransform; }
+
+	inline _void AddBigBone( )
+		{ mBigBoneCount ++; }
+	inline _void DelBigBone( )
+		{ mBigBoneCount --; }
 	inline _void NeedToUpdate( )
 		{ mNeedToUpdate = _true; }
 
@@ -65,19 +72,25 @@ public:
 
 	virtual _dword GetSkinBoneCount( ) const
 		{ return mSkinBoneCount; }
+
+	virtual _dword GetBigBoneCount( ) const
+		{ return mBigBoneCount; }
+
 	virtual const AxisAlignedBox& GetBoundBox( ) const
 		{ return mBoundBox; }
 		
 	virtual IBone*			CreateBone( StringPtr name, _dword parentid, _bool dummy );
 	virtual _void			ReleaseBone( IBone*& bone );
 	virtual _void			ClearBone( );
-
 	virtual IBone*			GetBone( StringPtr name ) const;
 
 	virtual _void			TransferSkinTransform( Geometry& geo ) const;
 
 	virtual _void			UsingSkeleton( _dword priority );
+	
 	virtual _void			Skinning( Geometry& geo );
+
+	virtual _void			AdjustSkeletonBoundBox( const AxisAlignedBox& aabb );
 
 	virtual _void			ClearAnimas( );
 };
