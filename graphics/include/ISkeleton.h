@@ -19,11 +19,6 @@ public:
 	virtual IBone*					GetBone( _dword index ) const = 0;
 	// Get bone by name.
 	virtual IBone*					GetBone( StringPtr name ) const = 0;
- 
-	// Set skeleton influence.
-	virtual _void					SetInfluence( ISkeletonInf* inf ) = 0;
-	// Get the skeleton influence current using.
-	virtual ISkeletonInf*			GetInfluence( ) = 0;
 
 	// Set frame token of skeleton ( used for clipping ).
 	virtual _void					SetFrameToken( _dword token ) = 0;
