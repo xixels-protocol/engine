@@ -79,6 +79,7 @@ public:
 	virtual _void			UsingSkeleton( _dword priority );
 	virtual _void			Skinning( Geometry& geo );
 
+	virtual _void			ClearAnimas( );
 };
 
 };
