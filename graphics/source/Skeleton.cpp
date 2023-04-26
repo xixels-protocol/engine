@@ -36,6 +36,152 @@ Skeleton::~Skeleton( )
 	}
 }
 
+_void Skeleton::CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _byte* obuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker )
+{
+	// Get influence offset for each vertex group.
+	_dword infoffset = sizeof( _float ) * 12;
+	if ( nbuffer )
+		infoffset += sizeof( _float ) * 12;
+
+	if ( tbuffer )
+		infoffset += sizeof( _float ) * 16;
+
+	_byte* ibuffer = hbuffer + infoffset;
+
+	Matrix3x4 mat = Matrix3x4::cIdentity;
+
+	// Process vertex one by one.
+	for ( _dword i = 0; i < vnumber; i ++ )
+	{
+		_float* srcvertex = (_float*) hbuffer;
+		_float* desvertex = (_float*) vbuffer;
+
+		Vector3 pos( srcvertex[0], srcvertex[4], srcvertex[8] );
+
+		// Process bone influence.
+		const ModelInfluenceGroup* infgroup = (ModelInfluenceGroup*) ibuffer;
+
+		_dword boneid = infgroup->mBoneIDList[0];
+		if ( boneid < bonecount )
+		{
+			_float weight = infgroup->mWeightList[0];
+			if ( weight >= 1.0f )
+			{
+				mat = skinmat[ boneid ];
+			}
+			else
+			{
+				mat = skinmat[ boneid ] * weight;
+
+				boneid = infgroup->mBoneIDList[1];
+				if ( boneid < bonecount )
+				{
+					weight = infgroup->mWeightList[1];
+					mat += skinmat[ boneid ] * weight;
+
+					boneid = infgroup->mBoneIDList[2];
+					if ( boneid < bonecount )
+					{
+						weight = infgroup->mWeightList[2];
+						mat += skinmat[ boneid ] * weight;
+
+						boneid = infgroup->mBoneIDList[3];
+						if ( boneid < bonecount )
+						{
+							weight = infgroup->mWeightList[3];
+							mat += skinmat[ boneid ] * weight;
+						}
+					}
+				}
+			}
+
+			pos *= mat;
+
+			// x, y, z.
+			desvertex[0] = pos.x;
+			desvertex[1] = pos.y;
+			desvertex[2] = pos.z;
+
+			// nx, ny, nz.
+			if ( nbuffer )
+			{
+				Vector3 nor( srcvertex[12], srcvertex[16], srcvertex[20] );
+				nor *= mat.GetRotationMatrix( );
+
+				_float* norvertex = (_float*) nbuffer;
+
+				norvertex[0] = nor.x;
+				norvertex[1] = nor.y;
+				norvertex[2] = nor.z;
+			}
+
+			if ( tbuffer )
+			{
+				Vector3 tan( srcvertex[24], srcvertex[28], srcvertex[32] );
+				_float tanw = srcvertex[36];
+				tan *= mat.GetRotationMatrix( );
+
+				_float* tanvertex = (_float*) tbuffer;
+
+				tanvertex[0] = tan.x;
+				tanvertex[1] = tan.y;
+				tanvertex[2] = tan.z;
+				tanvertex[3] = tanw;
+
+				tbuffer += vsize;
+			}
+
+			if ( obuffer )
+			{
+				*( (Vector3*) obuffer ) = pos;
+				obuffer += sizeof( Vector4 );
+				*( (Vector3*) obuffer ) = pos;
+				obuffer += sizeof( Vector4 );
+			}
+		}
+ 
+		// Move vertex buffer to next vertex.
+		vbuffer += vsize;
+		nbuffer += vsize;
+
+		// Move helper buffer to next vertex group.
+		hbuffer += sizeof( _float );
+		ibuffer += sizeof( ModelInfluenceGroup );
+
+		if ( ( i + 1 ) % 4 == 0 )
+		{
+			hbuffer += infoffset - sizeof( _float ) * 4 + sizeof( ModelInfluenceGroup ) * 4;
+			ibuffer += infoffset;
+		}
+	}
+}
+
+_void Skeleton::AnimateBones( ISkeletonAnima* anima, _float time, _float weight )
+{
+	if ( weight <= 0.0f )
+		return;
+
+	// Skeleton affected, need to update.
+	mNeedToUpdate = _true;
+	mNeedToUpdateDynamicBone = _true;
+
+	// Check if there is existing animation.
+	for ( _long i = 0; i < mAffectAnimas.Length( ); i ++ )
+	{
+		AffectAnima& aa = mAffectAnimas[i];
+
+		if ( aa.mAnima == anima )
+		{
+			aa.mTime = time;
+			aa.mWeight = Math::Max( aa.mWeight, weight );
+			return;
+		}
+	}
+
+	GetModelFactory( ).CloneAnimation( anima );
+	mAffectAnimas.Add( AffectAnima( anima, time, weight ) );
+}
+
 _void Skeleton::UpdateSkinTransform( )
 {
 	// Set skin transform, must be align of 16.
@@ -54,7 +200,6 @@ _void Skeleton::UpdateSkinTransform( )
 		if ( bone->mScaling.Equal( Vector3::cIdentity ) == _false )
 		{
 			// TODO, better way than matrix transform.
-
 			Matrix4 mat1;
 			mat1.Compose( bone->mBoneSpaceTranslation, bone->mBoneSpaceRotation, Vector3::cIdentity );
 
@@ -258,6 +403,9 @@ _void Skeleton::UsingSkeleton( _dword priority )
 	}
 }
 
+_void Skeleton::Skinning( Geometry& geo )
+{
+}
 _void Skeleton::ClearAnimas( )
 {
 	// Unref affecting animas.
