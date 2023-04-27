@@ -54,8 +54,8 @@ public:
 	inline _void AllocateBuffer( _dword bonecount )
 		{ mMemoryBuffer.CreateBuffer( bonecount * sizeof( Bone ) ); }
 
-	static _void	SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _byte* dbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker );
-	static _void	CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _byte* dbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker );
+	static _void	SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker );
+	static _void	CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker );
 
 	_void AnimateBones( ISkeletonAnima* anima, _float time, _float weight );
 	_void UpdateSkinTransform( );

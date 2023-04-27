@@ -78,7 +78,7 @@ Skeleton::~Skeleton( )
 	}
 }
 
-_void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _byte* obuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker )
+_void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker )
 {
 	// Prepare for skin transform.
 	_float4 m00, m01, m02;
@@ -158,29 +158,6 @@ _void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 		// Save vertex 4.
 		_SSE_STORE_VECTOR3( d3, (_float*) vbuffer );
 		vbuffer += vsize;
-
-		if ( obuffer )
-		{
-			_SSE_STORE_VECTOR3( d0, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-			_SSE_STORE_VECTOR3( d0, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-
-			_SSE_STORE_VECTOR3( d1, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-			_SSE_STORE_VECTOR3( d1, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-
-			_SSE_STORE_VECTOR3( d2, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-			_SSE_STORE_VECTOR3( d2, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-
-			_SSE_STORE_VECTOR3( d3, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-			_SSE_STORE_VECTOR3( d3, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-		}
 
 		// Combine bound box with a new vertex.
 		boxmaker.Expand( d0, d1, d2, d3 );
@@ -292,27 +269,11 @@ _void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 		_SSE_STORE_VECTOR3( d0, (_float*) vbuffer );
 		vbuffer += vsize;
 
-		if ( obuffer )
-		{
-			_SSE_STORE_VECTOR3( d0, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-			_SSE_STORE_VECTOR3( d0, (_float*) obuffer );
-			obuffer += sizeof( Vector4 );
-		}
-
 		if ( ( gnumber << 2 ) + 1 < vnumber )
 		{
 			// Save vertex 2.
 			_SSE_STORE_VECTOR3( d1, (_float*) vbuffer );
 			vbuffer += vsize;
-
-			if ( obuffer )
-			{
-				_SSE_STORE_VECTOR3( d1, (_float*) obuffer );
-				obuffer += sizeof( Vector4 );
-				_SSE_STORE_VECTOR3( d1, (_float*) obuffer );
-				obuffer += sizeof( Vector4 );
-			}
 		}
 		else
 		{
@@ -324,14 +285,6 @@ _void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 			// Save vertex 3.
 			_SSE_STORE_VECTOR3( d2, (_float*) vbuffer );
 			vbuffer += vsize;
-
-			if ( obuffer )
-			{
-				_SSE_STORE_VECTOR3( d2, (_float*) obuffer );
-				obuffer += sizeof( Vector4 );
-				_SSE_STORE_VECTOR3( d2, (_float*) obuffer );
-				obuffer += sizeof( Vector4 );
-			}
 		}
 		else
 		{
@@ -342,13 +295,6 @@ _void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 		{
 			// Save vertex 4.
 			_SSE_STORE_VECTOR3( d3, (_float*) vbuffer );
-
-			if ( obuffer )
-			{
-				_SSE_STORE_VECTOR3( d3, (_float*) obuffer );
-				obuffer += sizeof( Vector4 );
-				_SSE_STORE_VECTOR3( d3, (_float*) obuffer );
-			}
 		}
 		else
 		{
@@ -441,7 +387,7 @@ _void Skeleton::SSESkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 	}
 }
 
-_void Skeleton::CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _byte* obuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker )
+_void Skeleton::CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _byte* hbuffer, _dword vnumber, _dword vsize, Matrix3x4* skinmat, _dword bonecount, AxisAlignedBoxMaker& boxmaker )
 {
 	// Get influence offset for each vertex group.
 	_dword infoffset = sizeof( _float ) * 12;
@@ -534,14 +480,6 @@ _void Skeleton::CPUSkinning( _byte* vbuffer, _byte* nbuffer, _byte* tbuffer, _by
 				tanvertex[3] = tanw;
 
 				tbuffer += vsize;
-			}
-
-			if ( obuffer )
-			{
-				*( (Vector3*) obuffer ) = pos;
-				obuffer += sizeof( Vector4 );
-				*( (Vector3*) obuffer ) = pos;
-				obuffer += sizeof( Vector4 );
 			}
 		}
  
