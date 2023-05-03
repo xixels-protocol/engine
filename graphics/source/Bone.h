@@ -20,6 +20,8 @@ private:
 	_dword				mParentID;
 	_bool				mDummy;
 	_float				mSize;
+	_float				mBoundSize;
+	_bool				mScaled;
 
 	Vector3				mInitTranslation;
 	Quaternion			mInitRotation;
@@ -29,6 +31,8 @@ private:
 
 	Vector3				mBoneSpaceTranslation;
 	Quaternion			mBoneSpaceRotation;
+
+	Vector3				mLastScaling;
 
 	Vector3				mTranslation;
 	Quaternion			mRotation;
@@ -57,6 +61,13 @@ public:
 
 	virtual _float GetSize( ) const
 		{ return mSize; }
+	virtual _float GetPickSize( ) const
+		{ return mSize * ( mScaling.x + mScaling.y + mScaling.z ) / 3.0f; }
+
+	virtual _void SetBoundSize( _float boundsize )
+		{ mBoundSize = boundsize; }
+	virtual _float GetBoundSize( ) const
+		{ return mBoundSize; }
 
 	virtual _void SetInitTranslation( const Vector3& t )
 		{ mInitTranslation = t; }
@@ -67,6 +78,9 @@ public:
 		{ mInitRotation = r; }
 	virtual const Quaternion& GetInitRotation( ) const
 		{ return mInitRotation; }
+
+	virtual _void SetScaling( const Vector3& s )
+		{ mScaling = mLastScaling = s; }
 
 	virtual ISkeleton*			GetHostSkeleton( ) const;
 
@@ -88,6 +102,8 @@ public:
 	virtual const Quaternion&	GetRotation( ) const;
 	virtual const Vector3&		GetScaling( ) const;
 	virtual Matrix4				GetTransform( ) const;
+
+	virtual ITagPoint*			CreateTagPoint( );
 };
 
 };
