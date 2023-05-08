@@ -167,3 +167,132 @@ _void IndexBuffer::ChangeResObject( )
 	if ( mResourceData->mResObject != _null && mResourceData->mAlignBuffer != _null )
 		GetRenderer( ).UnlockIndexBuffer( mResourceData->mResObject, mResourceData->mAlignBuffer, mResourceData->mLength );
 }
+
+_void IndexBuffer::ChangeIndexBuffer( _void* buffer, _dword length, _dword isize )
+{
+	ChangeResObject( );
+
+	_dword oldlength = mResourceData->mLength;
+	mResourceData->mLength = length;
+	mResourceData->mIndexSize = isize;
+
+	// Process buffer in memory.
+	if ( mResourceData->mAlignBuffer != _null )
+	{
+		_byte* rbuffer = mResourceData->mRawBuffer;
+		CreateMemoryBuffer( );
+		Memory::MemCpy( mResourceData->mAlignBuffer, buffer, length );
+		assert( rbuffer != buffer )
+		delete[] rbuffer;
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseIndexBufferSize( IGeometryFactory::_BUFFER_SYSTEM, oldlength );
+	}
+
+	// Process buffer in render api.
+	if ( mResourceData->mResObject != _null )
+	{
+		_void* ib = GetRenderer( ).CreateIndexBuffer( mResourceData->mType, length, isize );
+		if ( ib == _null )
+			return;
+
+		( (GeometryFactory&) GetGeometryFactory( ) ).IncreaseIndexBufferSize( IGeometryFactory::_BUFFER_RENDER, length );
+
+		_byte* newbuffer = (_byte*) GetRenderer( ).LockIndexBuffer( ib, 0, length, 0 );
+
+		Memory::MemCpy( newbuffer, buffer, length );
+
+		if ( mResourceData->mAlignBuffer != _null)
+			GetRenderer( ).UnlockIndexBuffer( ib, newbuffer, length );
+		else
+			GetRenderer( ).UnlockIndexBuffer( ib, _null, 0 );
+
+		GetRenderer( ).ReleaseIndexBuffer( mResourceData->mResObject );
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseIndexBufferSize( IGeometryFactory::_BUFFER_RENDER, oldlength );
+
+		mResourceData->mResObject = ib;
+	}
+}
+
+_void* IndexBuffer::Lock( _dword offset, _dword length, _dword flag )
+{
+	if ( mResourceData->mResObject == _null && mResourceData->mAlignBuffer == _null )
+		return _null;
+
+	if ( offset + length > mResourceData->mLength )
+		return _null;
+
+	mLockFlag = flag;
+
+	// Change index buffer resource when lock to write.
+	if ( ( flag & IGeometryFactory::_LOCK_READONLY ) == 0 && ( flag & IGeometryFactory::_LOCK_INITFILL ) == 0 )
+		ChangeResObject( );
+	
+	// We use both resource object and memory buffer in OpenglES 2.0 in which case only the memory buffer is accessable.
+	if ( mResourceData->mAlignBuffer != _null )
+		return mResourceData->mAlignBuffer + offset;
+
+	if ( length == 0 )
+		length = mResourceData->mLength;
+
+	// Lock index buffer.
+	_byte* buffer = _null;
+	if ( mResourceData->mResObject != _null )
+		buffer = (_byte*) GetRenderer( ).LockIndexBuffer( mResourceData->mResObject, offset, length, flag );
+
+	return buffer;
+}
+
+_void IndexBuffer::Unlock( )
+{
+	if ( mResourceData->mResObject == _null && mResourceData->mAlignBuffer == _null )
+		return;
+
+	// Write back memory buffer into index buffer when mLockFlag is not readonly.
+	if ( mResourceData->mAlignBuffer != _null )
+	{
+		if ( mLockFlag != IGeometryFactory::_LOCK_READONLY && GeometryFactory::IsIndexBufferUnlockDisabled( ) == _false )
+			GetRenderer( ).UnlockIndexBuffer( mResourceData->mResObject, mResourceData->mAlignBuffer, mResourceData->mLength );
+	}
+	else
+	{
+		GetRenderer( ).UnlockIndexBuffer( mResourceData->mResObject, _null, mResourceData->mLength );
+	}
+
+	mLockFlag = 0;
+}
+
+_bool IndexBuffer::Copy( _dword offset, _void* buffer, _dword length )
+{
+	if ( offset + length > mResourceData->mLength )
+		return _false;
+
+	// Lock index buffer to read.
+	_void* tempbuffer = Lock( offset, length, IGeometryFactory::_LOCK_READONLY );
+	if ( tempbuffer == _null )
+		return _false;
+
+	Memory::MemCpy( buffer, tempbuffer, length );
+
+	Unlock( );
+
+	return _true;
+}
+
+_bool IndexBuffer::Fill( _dword offset, const _void* buffer, _dword length )
+{
+	if ( buffer == _null )
+		return _false;
+
+	if ( offset + length > mResourceData->mLength )
+		return _false;
+
+	// Lock index buffer to write.
+	_void* tempbuffer = Lock( offset, length, IGeometryFactory::_LOCK_WRITEONLY );
+	if ( tempbuffer == _null )
+		return _false;
+
+	Memory::MemCpy( tempbuffer, buffer, length );
+
+	Unlock( );
+
+	return _true;
+}
