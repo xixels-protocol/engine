@@ -20,4 +20,25 @@ IndexBuffer::IndexBuffer( IndexBuffer* buffer ) : mUserData( 0 ), mLockFlag( 0 )
 
 IndexBuffer::~IndexBuffer( )
 {
+	ReleaseResourceData( );
+}
+
+_void IndexBuffer::ReleaseResourceData( )
+{
+	// Release owned resource.
+	if ( mResourceData->DecRefCount( ) == 0 )
+	{
+		if ( mResourceData->mResObject != _null )
+		{
+			GetRenderer( ).ReleaseIndexBuffer( mResourceData->mResObject );
+			( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseIndexBufferSize( IGeometryFactory::_BUFFER_RENDER, mResourceData->mLength );
+		}
+		if ( mResourceData->mRawBuffer != _null )
+		{
+			delete[] mResourceData->mRawBuffer;
+			( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseIndexBufferSize( IGeometryFactory::_BUFFER_SYSTEM, mResourceData->mLength );
+		}
+
+		delete mResourceData;
+	}
 }
