@@ -196,3 +196,170 @@ _void VertexBuffer::ChangeVertexSize( _dword number, _dword offset, _dword oldvs
 
 	mResourceData->mVertexSize = newvsize;
 }
+
+_void VertexBuffer::ResetResObject( _void* vb )
+{
+	if ( mResourceData->mResObject == vb )
+		return;
+
+	if ( vb != _null )
+		( (GeometryFactory&) GetGeometryFactory( ) ).IncreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, mResourceData->mLength );
+
+	// Reset resource object.
+	GetRenderer( ).ReleaseVertexBuffer( mResourceData->mResObject );
+	if ( mResourceData->mResObject != _null )
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, mResourceData->mLength );
+
+	mResourceData->mResObject = vb;
+}
+
+_void VertexBuffer::ResetResObject( _void* vb, VertexBuffer* buffer )
+{
+	ResetResObject( vb );
+	if ( buffer != _null )
+	{
+		ReleaseMemoryBuffer( );
+
+		mResourceData->mType			= buffer->mResourceData->mType;
+		mResourceData->mLength			= buffer->mResourceData->mLength;
+		mResourceData->mVertexSize		= buffer->mResourceData->mVertexSize;
+		mResourceData->mResVertexSize	= buffer->mResourceData->mResVertexSize;
+		mResourceData->mVertexFormat	= buffer->mResourceData->mVertexFormat;
+		mResourceData->mAlign			= buffer->mResourceData->mAlign;
+		mResourceData->mSkinCount		= buffer->mResourceData->mSkinCount;
+		mResourceData->mBoundBox		= buffer->mResourceData->mBoundBox;
+
+		mResourceData->mDeclObject		= GeometryFactory::GetVertexDecl( mResourceData->mVertexFormat );;
+
+		if ( buffer->mResourceData->mAlignBuffer != _null )
+		{
+			CreateMemoryBuffer( );
+			Memory::MemCpy( mResourceData->mAlignBuffer, buffer->mResourceData->mAlignBuffer, mResourceData->mLength );
+			if ( mResourceData->mResObject != _null )
+				GetRenderer( ).UnlockVertexBuffer( mResourceData->mResObject, mResourceData->mAlignBuffer, mResourceData->mLength );
+		}
+	}
+}
+
+_void VertexBuffer::ChangeResObject( )
+{
+	if ( GetModelFactory( ).IsForceRefreshResObjectEnabled( ) )
+		return;
+
+	// Already owned resource, dont need to change.
+	if ( mResourceData->GetRefCount( ) == 1 )
+		return;
+
+	_byte* abuffer = mResourceData->mAlignBuffer;
+
+	// Create resource data.
+	ResourceData* data = new ResourceData( GetRenderer( ).CloneVertexBuffer( mResourceData->mResObject ),
+		mResourceData->mType, mResourceData->mLength, mResourceData->mVertexSize, mResourceData->mVertexFormat, mResourceData->mAlign );
+	data->mSkinCount = mResourceData->mSkinCount;
+	data->mBoundBox = mResourceData->mBoundBox;
+	mResourceData->DecRefCount( );
+	mResourceData = data;
+	if ( mResourceData->mResObject != _null )
+		( (GeometryFactory&) GetGeometryFactory( ) ).IncreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, mResourceData->mLength );
+
+	// Create vertex decl.
+	mResourceData->mDeclObject = GeometryFactory::GetVertexDecl( mResourceData->mVertexFormat );
+
+	// Copy memory buffer back if needed.
+	if ( abuffer != _null )
+	{
+		CreateMemoryBuffer( );
+		Memory::MemCpy( mResourceData->mAlignBuffer, abuffer, mResourceData->mLength );
+	}
+
+	// Write back memory buffer into vertex buffer.
+	if ( mResourceData->mResObject != _null && mResourceData->mAlignBuffer != _null )
+		GetRenderer( ).UnlockVertexBuffer( mResourceData->mResObject, mResourceData->mAlignBuffer, mResourceData->mLength );
+}
+
+_void VertexBuffer::ChangeVertexFormat( _dword format )
+{
+	// Only lower 15bits are useful.
+	format &= IVertexBuffer::_FORMAT_VERTEXDECL_MASK;
+
+	if ( mResourceData->mVertexFormat == format )
+		return;
+
+	// Change vertex buffer size.
+	if ( mResourceData->mResObject != _null || mResourceData->mAlignBuffer != _null )
+	{
+		ChangeResObject( );
+
+		_dword vnumber = mResourceData->mLength / mResourceData->mVertexSize;
+		_dword sameformat = 0, diffformat = 0;
+		_dword voffset = ModelHelper::GetVertexDiffOffset( mResourceData->mVertexFormat, format, sameformat, diffformat );
+		_dword newsize = ModelHelper::GetVertexSize( format );
+
+		ChangeVertexSize( vnumber, voffset, mResourceData->mVertexSize, newsize );
+	}
+
+	mResourceData->mVertexFormat = format;
+	mResourceData->mResVertexSize = mResourceData->mVertexSize;
+
+	// Create vertex decl.
+	mResourceData->mDeclObject = GeometryFactory::GetVertexDecl( format );
+}
+
+_void VertexBuffer::ChangeVertexBuffer( _void* buffer, _dword length, _dword format )
+{
+	if ( buffer == _null )
+		return;
+
+	ChangeResObject( );
+
+	// Only lower 15bits is used for vertex format.
+	format &= IVertexBuffer::_FORMAT_VERTEXDECL_MASK;
+	mResourceData->mVertexFormat = format;
+
+	_dword oldlength = mResourceData->mLength;
+	mResourceData->mLength = length;
+	mResourceData->mVertexSize = ModelHelper::GetVertexSize( format );
+	mResourceData->mResVertexSize = mResourceData->mVertexSize;
+
+	// Process buffer in memory.
+	if ( mResourceData->mAlignBuffer != _null )
+	{
+		_dword oldsize = GetMemoryBufferSize( );
+		_byte* rbuffer = mResourceData->mRawBuffer;
+		CreateMemoryBuffer( );
+		Memory::MemCpy( mResourceData->mAlignBuffer, buffer, length );
+		FG_ASSERT( rbuffer != buffer )
+		delete[] rbuffer;
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseVertexBufferSize( IGeometryFactory::_BUFFER_SYSTEM, oldsize );
+	}
+
+	// Process buffer in render api.
+	if ( mResourceData->mResObject != _null )
+	{
+		_dword newlength = ModelHelper::GetSize( format, length );
+		_void* vb = GetRenderer( ).CreateVertexBuffer( mResourceData->mType, newlength );
+		if ( vb == _null )
+			return;
+
+		( (GeometryFactory&) GetGeometryFactory( ) ).IncreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, length );
+
+		_byte* newbuffer = (_byte*) GetRenderer( ).LockVertexBuffer( vb, 0, newlength, IGeometryFactory::_LOCK_INITFILL );
+
+		if ( newbuffer != _null ) 
+		{
+			Memory::MemCpy( newbuffer, buffer, newlength );
+		}
+
+		if ( mResourceData->mAlignBuffer != _null )
+			GetRenderer( ).UnlockVertexBuffer( vb, mResourceData->mAlignBuffer, newlength );
+		else
+			GetRenderer( ).UnlockVertexBuffer( vb, _null, 0 );
+
+		GetRenderer( ).ReleaseVertexBuffer( mResourceData->mResObject );
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, oldlength );
+
+		mResourceData->mResObject = vb;
+	}
+
+	mResourceData->mDeclObject = GeometryFactory::GetVertexDecl( format );
+}
