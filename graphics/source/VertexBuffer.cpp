@@ -103,3 +103,96 @@ _dword VertexBuffer::GetMemoryBufferSize( ) const
 	else
 		return mResourceData->mLength + mResourceData->mAlign;
 }
+
+_void VertexBuffer::ChangeVertexSize( _dword number, _dword offset, _dword oldvsize, _dword newvsize )
+{
+	FG_ASSERT( GetModelFactory( ).IsForceRefreshResObjectEnabled( ) || mResourceData->GetRefCount( ) == 1 )
+
+	_dword minsize = Math::Min( newvsize, oldvsize );
+	_dword newlength = newvsize * number;
+
+	offset = Math::Min( minsize, offset );
+	
+	// Process buffer in memory.
+	if ( mResourceData->mAlignBuffer != _null )
+	{
+		_byte* rbuffer = mResourceData->mRawBuffer;
+		_byte* abuffer = mResourceData->mAlignBuffer;
+
+		_dword oldsize = GetMemoryBufferSize( );
+		mResourceData->mLength = newlength;
+		CreateMemoryBuffer( );
+
+		_byte* newbuffer = mResourceData->mAlignBuffer;
+
+		// Copy vertex data.
+		for ( _dword i = 0; i < number; i ++ )
+		{
+			if ( offset == minsize )
+			{
+				Memory::MemCpy( newbuffer + newvsize * i, abuffer + oldvsize * i, minsize );
+			}
+			else
+			{
+				Memory::MemCpy( newbuffer + newvsize * i, abuffer + oldvsize * i, offset );
+
+				if ( newvsize > oldvsize )
+					Memory::MemCpy( newbuffer + newvsize * i + offset + newvsize - oldvsize, abuffer + oldvsize * i + offset, minsize - offset );
+				else
+					Memory::MemCpy( newbuffer + newvsize * i + offset, abuffer + oldvsize * i + offset + oldvsize - newvsize, minsize - offset );
+			}
+		}
+
+		delete[] rbuffer;
+
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseVertexBufferSize( IGeometryFactory::_BUFFER_SYSTEM, oldsize );
+	}
+
+	// Process buffer in render api.
+	if ( mResourceData->mResObject != _null )
+	{	
+		_void* vb = GetRenderer( ).CreateVertexBuffer( mResourceData->mType, newlength );
+		if ( vb == _null )
+			return;
+
+		( (GeometryFactory&) GetGeometryFactory( ) ).IncreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, newlength );
+
+		_byte* oldbuffer = (_byte*) GetRenderer( ).LockVertexBuffer( mResourceData->mResObject, 0, mResourceData->mLength, IGeometryFactory::_LOCK_READONLY );
+		_byte* newbuffer = (_byte*) GetRenderer( ).LockVertexBuffer( vb, 0, newlength, IGeometryFactory::_LOCK_SUBWRITE );
+
+		if ( oldbuffer != _null && newbuffer != _null )
+		{
+			// Copy vertex data.
+			for ( _dword i = 0; i < number; i ++ )
+			{
+				if ( offset == minsize )
+				{
+					Memory::MemCpy( newbuffer + newvsize * i, oldbuffer + oldvsize * i, minsize );
+				}
+				else
+				{
+					Memory::MemCpy( newbuffer + newvsize * i, oldbuffer + oldvsize * i, offset );
+
+					if ( newvsize > oldvsize )
+						Memory::MemCpy( newbuffer + newvsize * i + offset + newvsize - oldvsize, oldbuffer + oldvsize * i + offset, minsize - offset );
+					else
+						Memory::MemCpy( newbuffer + newvsize * i + offset, oldbuffer + oldvsize * i + offset + oldvsize - newvsize, minsize - offset );
+				}
+			}
+		}
+
+		GetRenderer( ).UnlockVertexBuffer( mResourceData->mResObject, _null, 0 );
+		if ( mResourceData->mAlignBuffer != _null )
+			GetRenderer( ).UnlockVertexBuffer( vb, newbuffer, newlength );
+		else
+			GetRenderer( ).UnlockVertexBuffer( vb, _null, 0 );
+
+		GetRenderer( ).ReleaseVertexBuffer( mResourceData->mResObject );
+		( (GeometryFactory&) GetGeometryFactory( ) ).DecreaseVertexBufferSize( IGeometryFactory::_BUFFER_RENDER, mResourceData->mLength );
+
+		mResourceData->mResObject = vb;
+		mResourceData->mLength = newlength;
+	}
+
+	mResourceData->mVertexSize = newvsize;
+}
