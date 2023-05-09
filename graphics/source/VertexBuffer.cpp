@@ -363,3 +363,90 @@ _void VertexBuffer::ChangeVertexBuffer( _void* buffer, _dword length, _dword for
 
 	mResourceData->mDeclObject = GeometryFactory::GetVertexDecl( format );
 }
+
+_void* VertexBuffer::Lock( _dword offset, _dword length, _dword flag )
+{
+	if ( mResourceData->mResObject == _null && mResourceData->mAlignBuffer == _null )
+		return _null;
+
+	if ( offset + length > mResourceData->mLength )
+		return _null;
+
+	mLockFlag = flag;
+
+	// Change vertex buffer resource when lock to write.
+	if ( ( flag & IGeometryFactory::_LOCK_READONLY ) == 0 && ( flag & IGeometryFactory::_LOCK_INITFILL ) == 0 )
+		ChangeResObject( );
+
+	// We use both resource object and memory buffer in OpenglES 2.0 in which case only the memory buffer is accessable.
+	if ( mResourceData->mAlignBuffer != _null )
+		return mResourceData->mAlignBuffer + offset;
+
+	if ( length == 0 )
+		length = mResourceData->mLength;
+
+	// Lock vertex buffer.
+	_byte* buffer = _null;
+	if ( mResourceData->mResObject != _null )
+		buffer = (_byte*) GetRenderer( ).LockVertexBuffer( mResourceData->mResObject, offset, length, flag );
+
+	return buffer;
+}
+
+_void VertexBuffer::Unlock( )
+{
+	if ( mResourceData->mResObject == _null && mResourceData->mAlignBuffer == _null )
+		return;
+
+	// Write back memory buffer into vertex buffer when mLockFlag is not readonly.
+	if ( mResourceData->mAlignBuffer != _null )
+	{
+		if ( GeometryFactory::IsVertexBufferUnlockDisabled( ) == _false )
+		{
+			GetRenderer( ).UnlockVertexBuffer( mResourceData->mResObject, mResourceData->mAlignBuffer, mResourceData->mLength );
+			mLockFlag = 0;
+		}
+	}
+	else
+	{
+		GetRenderer( ).UnlockVertexBuffer( mResourceData->mResObject, _null, mResourceData->mLength );
+		mLockFlag = 0;
+	}
+}
+
+_bool VertexBuffer::Copy( _dword offset, _void* buffer, _dword length )
+{
+	if ( offset + length > mResourceData->mLength )
+		return _false;
+
+	// Lock vertex buffer to read.
+	_void* tempbuffer = Lock( offset, length, IGeometryFactory::_LOCK_READONLY );
+	if ( tempbuffer == _null )
+		return _false;
+
+	Memory::MemCpy( buffer, tempbuffer, length );
+
+	Unlock( );
+
+	return _true;
+}
+
+_bool VertexBuffer::Fill( _dword offset, const _void* buffer, _dword length )
+{
+	if ( buffer == _null )
+		return _false;
+
+	if ( offset + length > mResourceData->mLength )
+		return _false;
+
+	// Lock vertex buffer to write.
+	_void* tempbuffer = Lock( offset, length, IGeometryFactory::_LOCK_WRITEONLY );
+	if ( tempbuffer == _null )
+		return _false;
+
+	Memory::MemCpy( tempbuffer, buffer, length );
+
+	Unlock( );
+
+	return _true;
+}
