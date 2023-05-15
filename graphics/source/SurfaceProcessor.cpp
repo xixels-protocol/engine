@@ -69,3 +69,39 @@ _void SurfaceProcessor::GetDwordMatrix( _byte* buffer, _dword pitch, const Rect&
 		}
 	}
 }
+
+_void SurfaceProcessor::ProcessHSL( _byte* buffer, _dword pitch, _dword hue, _dword saturation, _long lightness, const Rect& rect )
+{
+	for ( _long y = rect.t; y < rect.b; y ++ )
+	{
+		_dword* pointer = (_dword*)( buffer + y * pitch );
+		for ( _long x = rect.l; x < rect.r; x ++ )
+		{
+			Color color( pointer[x] );
+
+			_float h, s, l;
+			color.ToHSL( h, s, l );
+
+			if ( hue != -1 )
+				h = hue / 360.0f;
+
+			if ( saturation != -1 )
+				s = saturation / 100.0f;
+
+			if ( lightness != 0 )
+			{
+				l = l + lightness / 100.0f;
+
+				if ( l > 1.0f )
+					l = 1.0f;
+
+				if ( l < 0.0f )
+					l = 0.0f;
+			}
+
+			color.FromHSL( h, s, l );
+
+			pointer[x] = color;
+		}
+	}
+}
