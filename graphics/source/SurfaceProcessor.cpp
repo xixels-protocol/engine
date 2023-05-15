@@ -190,3 +190,56 @@ _void SurfaceProcessor::ProcessBorder( _byte* buffer, _dword pitch, _dword color
 	delete[] blurkernel;
 	delete[] oricolors;
 }
+
+_void SurfaceProcessor::ProcessBorder( _byte* buffer, _dword pitch, const Rect& rect )
+{
+	for ( _long y = rect.t + 1; y < rect.b - 1; y ++ )
+	{
+		_dword* pointer = (_dword*)( buffer + y * pitch );
+		_dword* pointer1 = (_dword*)( buffer + ( y - 1 ) * pitch );
+		//_dword* pointer2 = pointer1 - 1;
+		//_dword* pointer3 = pointer1 + 1;
+		_dword* pointer4 = pointer - 1;
+
+		for ( _long x = rect.l + 1; x < rect.r - 1; x ++ )
+		{
+			_dword p = pointer[x], c = p & 0xFF000000;
+			if ( c == 0 )
+				continue;
+
+			if ( ( pointer1[x] & 0xFF000000 ) < c )
+				pointer1[x] = p;
+			//if ( ( pointer2[x] & 0xFF000000 ) < c )
+			//	pointer2[x] = p;
+			//if ( ( pointer3[x] & 0xFF000000 ) < c )
+			//	pointer3[x] = p;
+			if ( ( pointer4[x] & 0xFF000000 ) < c )
+				pointer4[x] = p;
+		}
+	}
+
+	for ( _long y = rect.b - 2; y > rect.t; y -- )
+	{
+		_dword* pointer = (_dword*)( buffer + y * pitch );
+		_dword* pointer1 = (_dword*)( buffer + ( y + 1 ) * pitch );
+		//_dword* pointer2 = pointer1 - 1;
+		//_dword* pointer3 = pointer1 + 1;
+		_dword* pointer4 = pointer + 1;
+
+		for ( _long x = rect.r - 2; x > rect.l; x -- )
+		{
+			_dword p = pointer[x], c = p & 0xFF000000;
+			if ( c == 0 )
+				continue;
+
+			if ( ( pointer1[x] & 0xFF000000 ) < c )
+				pointer1[x] = p;
+			//if ( ( pointer2[x] & 0xFF000000 ) < c )
+			//	pointer2[x] = p;
+			//if ( ( pointer3[x] & 0xFF000000 ) < c )
+			//	pointer3[x] = p;
+			if ( ( pointer4[x] & 0xFF000000 ) < c )
+				pointer4[x] = p;
+		}
+	}
+}
