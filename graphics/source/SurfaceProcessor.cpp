@@ -105,3 +105,26 @@ _void SurfaceProcessor::ProcessHSL( _byte* buffer, _dword pitch, _dword hue, _dw
 		}
 	}
 }
+
+_void SurfaceProcessor::ProcessRGB( _byte* buffer, _dword pitch, _dword modulate, _dword additive, _dword subtract, const Rect& rect )
+{
+	Color m( modulate ), a( additive ), s( subtract );
+
+	for ( _long y = rect.t; y < rect.b; y ++ )
+	{
+		_dword* pointer = (_dword*)( buffer + y * pitch );
+		for ( _long x = rect.l; x < rect.r; x ++ )
+		{
+			Color color( pointer[x] );
+
+			if ( modulate != 0xFFFFFFFF )
+				color *= m;
+			if ( additive != 0x00000000 )
+				color += a;
+			if ( subtract != 0x00000000 )
+				color -= s;
+
+			pointer[x] = color;
+		}
+	}
+}
