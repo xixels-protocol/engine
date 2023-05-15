@@ -29,6 +29,10 @@ public:
 
 class SurfaceProcessor
 {
+private:
+	static _void	MakeGaussianBlurKernel( _float* matrix, _long radius );
+	static _void	GetDwordMatrix( _byte* buffer, _dword pitch, const Rect& rect, _long xx, _long yy, _dword* data, _long dx, _long dy );
+
 public:
 	static _void	ProcessHSL( _byte* buffer, _dword pitch, _dword hue, _dword saturation, _long lightness, const Rect& rect );
 	static _void	ProcessRGB( _byte* buffer, _dword pitch, _dword modulate, _dword additive, _dword subtract, const Rect& rect );
