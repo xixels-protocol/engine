@@ -128,3 +128,65 @@ _void SurfaceProcessor::ProcessRGB( _byte* buffer, _dword pitch, _dword modulate
 		}
 	}
 }
+
+_void SurfaceProcessor::ProcessBorder( _byte* buffer, _dword pitch, _dword color, _dword bordersize, _float blurrate, const Rect& rect )
+{
+	// TODO, optimize.
+
+	_long w = rect.Width( ), h = rect.Height( );
+
+	// Border Parameters
+	_dword realbordercolor	= color & 0x00FFFFFF;
+
+	// Blur Parameters
+	_long blurradius	= (_long) bordersize;
+	_long blursize		= ( blurradius * 2 ) + 1;
+	_long blursize2		= blursize * blursize;
+
+	_float* blurkernel	= new _float[ blursize2 ];
+	_dword* oricolors	= new _dword[ blursize2 ];
+	_dword* blurimage	= new _dword[ w * h ];
+
+	Memory::MemSet( oricolors, 0, blursize2 * 2 );
+	MakeGaussianBlurKernel( blurkernel, blurradius );
+
+	for ( _long y = rect.t; y < rect.b; y ++ )
+	{
+		for ( _long x = rect.l; x < rect.r; x ++ )
+		{
+			// Ori color
+			GetDwordMatrix( buffer, pitch, rect, x, y, oricolors, blurradius, blurradius );
+
+			// Blur
+			_float alpha = 0.0f;
+			for ( _long m = 0; m < blursize2; m ++ )
+			{
+				_float aa = ( ( oricolors[m] & 0xFF000000 ) >> 24 ) / 255.0f;
+				alpha += aa * blurkernel[m];
+			}
+
+			alpha *= blurrate;
+
+			if ( alpha > 1.0f )
+				alpha = 1.0f;
+
+			_dword aa = (_dword) ( alpha * 255.0f );		
+			_dword final = ( aa << 24 ) | realbordercolor;
+
+			blurimage[ ( y - rect.t ) * w + ( x - rect.l ) ] = final;
+		}
+	}
+
+	for ( _long y = rect.t; y < rect.b; y ++ )
+	{
+		for ( _long x = rect.l; x < rect.r; x ++ )
+		{
+			// Set back
+			*( ( (_dword*)( buffer + y * pitch ) ) + x ) = blurimage[ ( y - rect.t ) * w + ( x - rect.l ) ];
+		}
+	}
+
+	delete[] blurimage;
+	delete[] blurkernel;
+	delete[] oricolors;
+}
